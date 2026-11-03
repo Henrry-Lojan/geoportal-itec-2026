@@ -234,6 +234,70 @@
       opacity: 1;
     }
 
+    
+    /* ESTILOS DEL PANEL DE CAPAS QGIS */
+    .qgis-layer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #0f172a;
+      border: 1px solid #334155;
+      padding: 9px 12px;
+      border-radius: 8px;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .qgis-layer-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow: hidden;
+      flex: 1;
+    }
+    .qgis-layer-name {
+      font-weight: 700;
+      font-size: 0.82rem;
+      color: #34d399;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    .qgis-layer-btns {
+      display: flex;
+      gap: 6px;
+    }
+    .btn-qgis-mini {
+      background: #1e293b;
+      border: 1px solid #475569;
+      color: #f8fafc;
+      padding: 5px 9px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .btn-qgis-mini:active { transform: scale(0.95); }
+    .btn-qgis-mini.delete {
+      border-color: #ef4444;
+      color: #f87171;
+    }
+    .btn-qgis-mini.delete:hover {
+      background: rgba(239, 68, 68, 0.2);
+    }
+    .btn-clear-all-iso {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
     .top-bar {
       position: absolute;
       top: 98px;
@@ -858,8 +922,14 @@
         <button id="pill-restore-all" class="pill-btn" style="display: none; border-color: #ef4444; color: #f87171;">
           👁️ Restaurar Capas
         </button>
+        <button id="pill-delete-isolated" class="pill-btn" style="display: none; border-color: #ef4444; color: #f87171;" title="Eliminar capa recortada y volver al mapa normal">
+          🗑️ Eliminar Capa
+        </button>
         <button id="pill-deselect-entity" class="pill-btn" style="display: none; border-color: #f59e0b; color: #fbbf24;" title="Quitar selección actual">
           🧹 Deseleccionar
+        </button>
+        <button id="pill-open-qgis-layers" class="pill-btn" title="Panel de Capas estilo QGIS">
+          📑 Capas QGIS
         </button>
         <button id="pill-toggle-names" class="pill-btn" title="Mostrar u Ocultar Nombres">
           <span id="pill-names-icon">👁️</span> <span id="pill-names-text">Nombres: No</span>
@@ -933,6 +1003,9 @@
           <input type="range" id="input-layer-opacity" min="15" max="100" value="65" class="opacity-slider" />
         </div>
 
+        <button id="btn-delete-isolated-sheet" class="btn-action-qgis" style="display: none; background: rgba(239, 68, 68, 0.18); border: 1.5px solid #ef4444; color: #fca5a5;">
+          🗑️ ELIMINAR CAPA RECORTADA
+        </button>
         <button id="btn-restore-from-sheet" class="btn-action-qgis" style="display: none; background: #334155; color: #f87171;">
           👁️ Restaurar y Ver Todo el Ecuador
         </button>
@@ -1022,8 +1095,14 @@
           <button id="btn-close-qgis" class="btn-close-sheet">✕</button>
         </div>
         <div id="group-isolated-layers" style="display: none; margin-bottom: 14px;">
-          <h4 style="font-size: 0.82rem; color: #34d399; margin-bottom: 8px;">✂️ Capas Cortadas / Aisladas</h4>
-          <div id="list-isolated-layers" style="display: flex; flex-direction: column; gap: 6px;"></div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h4 style="font-size: 0.84rem; color: #34d399;">✂️ Capas Cortadas / Aisladas</h4>
+            <button id="btn-delete-all-isolated" class="btn-clear-all-iso" title="Eliminar todas las capas creadas">🗑️ Borrar Todas</button>
+          </div>
+          <div id="list-isolated-layers"></div>
+        </div>
+        <div id="no-isolated-msg" style="background: rgba(15, 23, 42, 0.6); padding: 8px 12px; border-radius: 8px; font-size: 0.78rem; color: #94a3b8; margin-bottom: 12px; border: 1px dashed #334155;">
+          ℹ️ No hay capas recortadas aún. Toca una provincia o cantón en el mapa y pulsa <b>✂️ Cortar y Aislar</b>.
         </div>
         <div>
           <h4 style="font-size: 0.82rem; color: #38bdf8; margin-bottom: 8px;">🏛️ Capas Base del Ecuador</h4>
@@ -1449,6 +1528,7 @@
 
       map.setView([-1.45, -78.50], 7);
       displayMapFocus.innerText = 'Zona: Todo el Ecuador';
+      updateIsolatedPills();
       showToast('👁️ Capas base encendidas');
     }
 
@@ -1499,6 +1579,7 @@
 
       displayMapFocus.innerText = `Zona Aislada: ${type} ${name}`;
       updateQgisLayersList();
+      updateIsolatedPills();
       closeBottomSheet();
       showToast(`✂️ ${name} aislada y centrada.`);
     });
@@ -1567,6 +1648,7 @@
 
       displayMapFocus.innerText = `Zona Aislada: ${layerTitle} (${cutFeatures.length})`;
       updateQgisLayersList();
+      updateIsolatedPills();
       closeBottomSheet();
       showToast(`✂️ ${layerTitle} centrada en pantalla.`);
     });
@@ -1589,48 +1671,129 @@
       });
     }
 
-    // Modal QGIS Layers
+    // =========================================================================
+    // PANEL DE CAPAS QGIS (PRENDER / APAGAR / CENTRAR / ELIMINAR CAPAS)
+    // =========================================================================
     const qgisModal = document.getElementById('qgis-modal');
     const listIsolatedLayers = document.getElementById('list-isolated-layers');
     const groupIsolatedLayers = document.getElementById('group-isolated-layers');
+    const noIsolatedMsg = document.getElementById('no-isolated-msg');
 
-    function openQgisModal() { qgisModal.classList.add('show'); }
+    function openQgisModal() {
+      updateQgisLayersList();
+      qgisModal.classList.add('show');
+    }
     document.getElementById('btn-close-qgis').addEventListener('click', () => qgisModal.classList.remove('show'));
+
+    const pillOpenQgis = document.getElementById('pill-open-qgis-layers');
+    if (pillOpenQgis) pillOpenQgis.addEventListener('click', openQgisModal);
+
+    function updateIsolatedPills() {
+      const hasIso = Object.keys(isolatedLayers).length > 0;
+      const pillRestore = document.getElementById('pill-restore-all');
+      const pillDeleteIso = document.getElementById('pill-delete-isolated');
+      const btnDeleteSheet = document.getElementById('btn-delete-isolated-sheet');
+      const btnRestoreSheet = document.getElementById('btn-restore-from-sheet');
+
+      if (pillRestore) pillRestore.style.display = hasIso ? 'flex' : 'none';
+      if (pillDeleteIso) pillDeleteIso.style.display = hasIso ? 'flex' : 'none';
+      if (btnDeleteSheet) btnDeleteSheet.style.display = hasIso ? 'flex' : 'none';
+      if (btnRestoreSheet) btnRestoreSheet.style.display = hasIso ? 'flex' : 'none';
+    }
 
     function updateQgisLayersList() {
       listIsolatedLayers.innerHTML = '';
       const keys = Object.keys(isolatedLayers);
 
       if (keys.length === 0) {
-        groupIsolatedLayers.style.display = 'none';
+        if (groupIsolatedLayers) groupIsolatedLayers.style.display = 'none';
+        if (noIsolatedMsg) noIsolatedMsg.style.display = 'block';
         return;
       }
-      groupIsolatedLayers.style.display = 'block';
+      if (groupIsolatedLayers) groupIsolatedLayers.style.display = 'block';
+      if (noIsolatedMsg) noIsolatedMsg.style.display = 'none';
 
       keys.forEach(k => {
         const item = isolatedLayers[k];
+        const isVisible = map.hasLayer(item.layer);
         const row = document.createElement('div');
-        row.style.display = 'flex';
-        row.style.alignItems = 'center';
-        row.style.justifyContent = 'space-between';
-        row.style.background = '#0f172a';
-        row.style.padding = '8px 10px';
-        row.style.borderRadius = '8px';
+        row.className = 'qgis-layer-row';
 
         row.innerHTML = `
-          <span style="font-weight: 700; font-size: 0.85rem; color: #34d399;">✂️ ${item.name}</span>
-          <div style="display: flex; gap: 6px;">
-            <button onclick="zoomToLayer('${k}')" style="background: #1e293b; border: 1px solid #38bdf8; color: #38bdf8; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; cursor: pointer;">Zoom</button>
-            <button onclick="downloadIsolated('${k}')" style="background: #1e293b; border: 1px solid #10b981; color: #10b981; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; cursor: pointer;">GeoJSON</button>
+          <div class="qgis-layer-info">
+            <input type="checkbox" ${isVisible ? 'checked' : ''} onchange="toggleIsolatedLayerVisibility('${k}')" style="cursor: pointer; width: 16px; height: 16px;" title="Prender o apagar capa" />
+            <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #10b981;"></span>
+            <span class="qgis-layer-name" title="${item.name}">${item.name}</span>
+          </div>
+          <div class="qgis-layer-btns">
+            <button onclick="zoomToLayer('${k}')" class="btn-qgis-mini" title="Centrar esta entidad">🎯</button>
+            <button onclick="downloadIsolated('${k}')" class="btn-qgis-mini" title="Descargar GeoJSON">📥</button>
+            <button onclick="deleteIsolatedLayer('${k}')" class="btn-qgis-mini delete" title="Eliminar esta capa">🗑️</button>
           </div>
         `;
         listIsolatedLayers.appendChild(row);
       });
     }
 
+    // Prender / Apagar capa aislada específica
+    window.toggleIsolatedLayerVisibility = function(id) {
+      const item = isolatedLayers[id];
+      if (!item) return;
+      if (map.hasLayer(item.layer)) {
+        map.removeLayer(item.layer);
+        showToast(`👁️ Capa "${item.name}" apagada`);
+      } else {
+        item.layer.addTo(map);
+        showToast(`👁️ Capa "${item.name}" encendida`);
+      }
+      updateQgisLayersList();
+    };
+
+    // Eliminar capa aislada específica
+    window.deleteIsolatedLayer = function(id) {
+      const item = isolatedLayers[id];
+      if (item) {
+        if (map.hasLayer(item.layer)) map.removeLayer(item.layer);
+        delete isolatedLayers[id];
+        showToast(`🗑️ Capa "${item.name}" eliminada`);
+      }
+      const remaining = Object.keys(isolatedLayers).length;
+      if (remaining === 0) {
+        hasIsolatedLayer = false;
+        restoreAllBaseLayers();
+      } else {
+        updateQgisLayersList();
+        updateIsolatedPills();
+      }
+    };
+
+    // Eliminar todas las capas aisladas
+    window.deleteAllIsolatedLayers = function() {
+      Object.values(isolatedLayers).forEach(item => {
+        if (map.hasLayer(item.layer)) map.removeLayer(item.layer);
+      });
+      for (let k in isolatedLayers) delete isolatedLayers[k];
+      hasIsolatedLayer = false;
+      restoreAllBaseLayers();
+      updateQgisLayersList();
+      updateIsolatedPills();
+      qgisModal.classList.remove('show');
+      showToast('🗑️ Todas las capas creadas fueron eliminadas.');
+    };
+
+    const btnDeleteAllIso = document.getElementById('btn-delete-all-isolated');
+    if (btnDeleteAllIso) btnDeleteAllIso.addEventListener('click', window.deleteAllIsolatedLayers);
+
+    const pillDeleteIso = document.getElementById('pill-delete-isolated');
+    if (pillDeleteIso) pillDeleteIso.addEventListener('click', window.deleteAllIsolatedLayers);
+
+    const btnDeleteSheet = document.getElementById('btn-delete-isolated-sheet');
+    if (btnDeleteSheet) btnDeleteSheet.addEventListener('click', window.deleteAllIsolatedLayers);
+
     window.zoomToLayer = function(id) {
       const item = isolatedLayers[id];
       if (item) {
+        if (!map.hasLayer(item.layer)) item.layer.addTo(map);
         focusAndCenterLayer(item.layer);
         qgisModal.classList.remove('show');
       }
