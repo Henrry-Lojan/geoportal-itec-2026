@@ -632,6 +632,41 @@
     .btn-search-item:active { background: #334155; }
 
     /* MODAL EXPORTACIÓN */
+    
+    /* SELECTOR DE MODO DE ENCUADRE */
+    .export-mode-box {
+      margin-bottom: 14px;
+    }
+    .export-mode-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .btn-mode-opt {
+      background: #1e293b;
+      border: 1.5px solid #334155;
+      border-radius: 10px;
+      padding: 10px 8px;
+      color: #94a3b8;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+    .btn-mode-opt strong { font-size: 0.80rem; color: #cbd5e1; }
+    .btn-mode-opt small { font-size: 0.68rem; color: #64748b; }
+    .btn-mode-opt span { font-size: 1.3rem; }
+    .btn-mode-opt.active {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: #10b981;
+    }
+    .btn-mode-opt.active strong { color: #10b981; }
+    .btn-mode-opt.active small { color: #34d399; }
+
     .academic-box {
       background: rgba(56, 189, 248, 0.12);
       border: 1.5px dashed #38bdf8;
@@ -984,8 +1019,25 @@
           <div class="academic-subtitle">INSTITUTO SUPERIOR TECNOLÓGICO ITEC 2026</div>
         </div>
 
-        <div id="export-centering-status" style="font-size: 0.78rem; color: #94a3b8; margin-bottom: 12px; text-align: center;">
-          <span id="export-focus-text">La imagen se descargará exactamente con el encuadre actual y membrete oficial.</span>
+        <!-- SELECTOR DE ENCUADRE DUAL (VISTA ACTUAL VS CENTRADO PURO) -->
+        <div class="export-mode-box">
+          <label class="export-label">📐 Modo de Encuadre para la Foto:</label>
+          <div class="export-mode-options">
+            <button id="mode-opt-current" class="btn-mode-opt active" type="button">
+              <span>📱</span>
+              <strong>Vista de Pantalla</strong>
+              <small>Lo que ves con tus dedos</small>
+            </button>
+            <button id="mode-opt-symmetric" class="btn-mode-opt" type="button">
+              <span>🎯</span>
+              <strong>Auto-Centrado Puro</strong>
+              <small>100% Simétrico en la hoja</small>
+            </button>
+          </div>
+        </div>
+
+        <div id="export-centering-status" style="font-size: 0.76rem; color: #38bdf8; margin-bottom: 12px; text-align: center; background: rgba(15,23,42,0.6); padding: 6px; border-radius: 8px;">
+          <span id="export-focus-text">📱 La foto saldrá exactamente como la tienes encuadrada en tu celular.</span>
         </div>
 
         <div class="export-field">
@@ -1003,6 +1055,27 @@
         
         <button id="btn-download-pdf" class="btn-export-opt btn-export-pdf">
           📄 Descargar Informe PDF Centrado (A4)
+        </button>
+      </div>
+    </div>
+
+  
+    <!-- MODAL DE VISTA PREVIA Y DESCARGA DIRECTA (PARA CELULARES) -->
+    <div id="preview-modal" class="modal-overlay">
+      <div class="modal-card" style="max-height: 90vh; overflow-y: auto;">
+        <div class="modal-header">
+          <h3>✅ ¡Foto Lista!</h3>
+          <button id="btn-close-preview" class="btn-close-sheet">✕</button>
+        </div>
+        <p style="font-size: 0.82rem; color: #94a3b8; text-align: center; margin-bottom: 10px;">
+          Descarga iniciada. Si tu celular la bloqueó, mantén pulsada la imagen para <strong>Guardar en Fotos</strong>:
+        </p>
+        <div id="preview-img-container" style="text-align: center; margin-bottom: 12px;"></div>
+        <a id="btn-preview-direct-download" class="btn-action-qgis btn-isolate" style="text-decoration: none; justify-content: center; margin-bottom: 8px;">
+          📥 Toca aquí para Volver a Descargar
+        </a>
+        <button id="btn-preview-done" class="btn-action-qgis" style="background: #334155; color: #fff;">
+          Listo / Cerrar
         </button>
       </div>
     </div>
@@ -1530,19 +1603,40 @@
       }
     }
 
+        // =========================================================================
+    // EXPORTACIÓN ESTABLE DUAL (VISTA ACTUAL VS CENTRADO PURO)
     // =========================================================================
-    // EXPORTACIÓN ESTABLE (CERO DESCENTRADO / CERO MOVIMIENTO HACIA ARRIBA)
-    // =========================================================================
+    let exportCenteringMode = 'current'; // 'current' o 'symmetric'
+
     const exportModal = document.getElementById('export-modal');
     const exportFocusText = document.getElementById('export-focus-text');
+    const optModeCurrent = document.getElementById('mode-opt-current');
+    const optModeSymmetric = document.getElementById('mode-opt-symmetric');
+
+    if (optModeCurrent && optModeSymmetric) {
+      optModeCurrent.addEventListener('click', () => {
+        exportCenteringMode = 'current';
+        optModeCurrent.classList.add('active');
+        optModeSymmetric.classList.remove('active');
+        exportFocusText.innerText = '📱 La foto saldrá exactamente como la tienes encuadrada con tus dedos.';
+      });
+      optModeSymmetric.addEventListener('click', () => {
+        exportCenteringMode = 'symmetric';
+        optModeSymmetric.classList.add('active');
+        optModeCurrent.classList.remove('active');
+        exportFocusText.innerText = '🎯 La foto centrará la entidad recortada en el medio geométrico puro.';
+      });
+    }
 
     document.getElementById('btn-open-export').addEventListener('click', () => {
       inputStudentName.value = studentName;
       if (hasIsolatedLayer) {
         const firstKey = Object.keys(isolatedLayers)[0];
-        exportFocusText.innerHTML = `Entidad aislada centrada: <b>${isolatedLayers[firstKey].name}</b>`;
+        exportFocusText.innerHTML = exportCenteringMode === 'current'
+          ? `📱 Vista actual de: <b>${isolatedLayers[firstKey].name}</b>`
+          : `🎯 Auto-centrado puro de: <b>${isolatedLayers[firstKey].name}</b>`;
       } else if (selectedEntity) {
-        exportFocusText.innerHTML = `Entidad centrada: <b>${selectedEntity.type} ${selectedEntity.name}</b>`;
+        exportFocusText.innerHTML = `Entidad: <b>${selectedEntity.type} ${selectedEntity.name}</b>`;
       } else {
         exportFocusText.innerText = "Centrado en: Todo el Ecuador";
       }
@@ -1554,10 +1648,17 @@
       exportModal.classList.remove('show');
     });
 
+    // Cierre de modal de vista previa
+    const previewModal = document.getElementById('preview-modal');
+    const btnClosePreview = document.getElementById('btn-close-preview');
+    const btnPreviewDone = document.getElementById('btn-preview-done');
+    if (btnClosePreview) btnClosePreview.addEventListener('click', () => previewModal.classList.remove('show'));
+    if (btnPreviewDone) btnPreviewDone.addEventListener('click', () => previewModal.classList.remove('show'));
+
     async function executeStableExport(format) {
       saveStudentName(inputStudentName.value);
       exportModal.classList.remove('show');
-      showToast(`📸 Generando lámina oficial ${format.toUpperCase()} (ITEC 2026)...`);
+      showToast(`📸 Procesando lámina ${format.toUpperCase()} (ITEC 2026)...`);
 
       const topBar = document.querySelector('.top-bar');
       const floatingTools = document.querySelector('.floating-tools');
@@ -1584,38 +1685,81 @@
         }
       }
 
-      try {
-        // CERO MOVIMIENTO: Preservamos la cámara exactamente donde está
-        await new Promise(r => setTimeout(r, 200));
+      const prevCenter = map.getCenter();
+      const prevZoom = map.getZoom();
 
+      if (exportCenteringMode === 'symmetric') {
+        let targetLayer = null;
+        if (hasIsolatedLayer) {
+          const firstKey = Object.keys(isolatedLayers)[0];
+          targetLayer = isolatedLayers[firstKey].layer;
+        } else if (selectedEntity && selectedEntity.layer) {
+          targetLayer = selectedEntity.layer;
+        }
+        if (targetLayer) {
+          const bounds = targetLayer.getBounds ? targetLayer.getBounds() : targetLayer;
+          if (bounds && bounds.isValid()) {
+            map.fitBounds(bounds, { padding: [40, 40], animate: false });
+            await new Promise(r => setTimeout(r, 260));
+          }
+        }
+      } else {
+        // CERO MOVIMIENTO: Mantiene exactamente la pantalla que encuadró el estudiante
+        await new Promise(r => setTimeout(r, 120));
+      }
+
+      try {
         const wrapper = document.getElementById('map-export-wrapper');
         const canvas = await html2canvas(wrapper, {
           useCORS: true,
-          allowTaint: true,
+          allowTaint: false,
           scale: 2,
           logging: false
         });
 
         const safeName = studentName.toLowerCase().replace(/[^a-z0-9]/g, '_') || 'estudiante_itec';
 
-        if (format === 'jpg' || format === 'jpeg') {
-          const imageUri = canvas.toDataURL('image/jpeg', 0.95);
-          const a = document.createElement('a');
-          a.setAttribute('download', `mapa_centrado_itec_${safeName}_2026.jpg`);
-          a.setAttribute('href', imageUri);
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          showToast('✅ ¡Imagen JPG descargada con éxito!');
-        } else if (format === 'png') {
-          const imageUri = canvas.toDataURL('image/png');
-          const a = document.createElement('a');
-          a.setAttribute('download', `mapa_centrado_itec_${safeName}_2026.png`);
-          a.setAttribute('href', imageUri);
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          showToast('✅ ¡Imagen PNG descargada con éxito!');
+        if (format === 'jpg' || format === 'jpeg' || format === 'png') {
+          const mime = (format === 'png') ? 'image/png' : 'image/jpeg';
+          const ext = (format === 'png') ? 'png' : 'jpg';
+          const filename = `mapa_itec_${safeName}_2026.${ext}`;
+
+          canvas.toBlob(blob => {
+            if (!blob) {
+              alert('Error al generar imagen');
+              return;
+            }
+            const blobUrl = URL.createObjectURL(blob);
+
+            // Descarga directa
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = blobUrl;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => a.remove(), 1000);
+
+            // Modal de vista previa y respaldo de guardado en móviles
+            const previewContainer = document.getElementById('preview-img-container');
+            const btnDirect = document.getElementById('btn-preview-direct-download');
+            if (previewModal && previewContainer && btnDirect) {
+              previewContainer.innerHTML = '';
+              const img = document.createElement('img');
+              img.src = blobUrl;
+              img.style.maxWidth = '100%';
+              img.style.maxHeight = '52vh';
+              img.style.borderRadius = '8px';
+              img.style.border = '1.5px solid #38bdf8';
+              previewContainer.appendChild(img);
+
+              btnDirect.href = blobUrl;
+              btnDirect.download = filename;
+              previewModal.classList.add('show');
+            }
+            showToast(`✅ ¡Imagen ${ext.toUpperCase()} lista para guardar!`);
+          }, mime, 0.95);
+
         } else if (format === 'pdf') {
           const imgData = canvas.toDataURL('image/jpeg', 0.95);
           const { jsPDF } = window.jspdf;
@@ -1654,6 +1798,9 @@
         console.error(err);
         alert('Error al exportar: ' + err.message);
       } finally {
+        if (exportCenteringMode === 'symmetric') {
+          map.setView(prevCenter, prevZoom, { animate: false });
+        }
         if (topBar) topBar.style.display = '';
         if (floatingTools) floatingTools.style.display = '';
         if (bottomSheet) bottomSheet.style.display = '';
