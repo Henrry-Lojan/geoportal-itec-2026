@@ -60,3 +60,4 @@ Para publicar el visor web gratuito en GitHub:
 ---
 
 *Desarrollado con Leaflet, html2canvas y jsPDF para la práctica docente en Sistemas de Información Geográfica y Gestión del Riesgo.*
+
