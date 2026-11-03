@@ -8,7 +8,7 @@
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   
-  <!-- html2canvas y jsPDF para descargas de Imagen y PDF -->
+  <!-- html2canvas y jsPDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -48,7 +48,7 @@
     #map {
       width: 100%;
       height: 100%;
-      background: #e2e8f0;
+      background: #0f172a;
       z-index: 1;
     }
 
@@ -65,7 +65,7 @@
       color: #f8fafc;
       z-index: 950;
       box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-      max-width: 330px;
+      max-width: 320px;
       pointer-events: none;
       transition: all 0.3s;
     }
@@ -78,553 +78,37 @@
       margin-bottom: 5px;
     }
     .itec-logo-icon { font-size: 1.25rem; }
-    .itec-title-main { font-size: 0.82rem; font-weight: 800; color: #38bdf8; text-transform: uppercase; }
-    .itec-career { font-size: 0.70rem; color: #34d399; font-weight: 700; text-transform: uppercase; }
-    .itec-student-line { font-size: 0.76rem; color: #f1f5f9; font-weight: 600; margin-top: 2px; }
-    .itec-student-name { color: #facc15; font-weight: 800; }
-    .itec-map-focus { font-size: 0.74rem; color: #38bdf8; font-weight: 800; margin-top: 2px; }
-
-    /* ======================================================== */
-    /* BARRA SUPERIOR TIPO QGIS TOOLBAR                         */
-    /* ======================================================== */
-    .top-bar {
-      position: absolute;
-      top: 98px;
-      left: 12px;
-      right: 12px;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-      pointer-events: none;
-      transition: opacity 0.2s;
+    .itec-title-main {
+      font-size: 0.92rem;
+      font-weight: 900;
+      color: #38bdf8;
+      letter-spacing: 0.5px;
+      line-height: 1.2;
     }
-
-    .pills-scroll {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-      pointer-events: auto;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-    }
-    .pills-scroll::-webkit-scrollbar { display: none; }
-
-    .pill-btn {
-      background: rgba(15, 23, 42, 0.92);
-      backdrop-filter: blur(8px);
-      border: 1.5px solid #334155;
-      color: #cbd5e1;
-      padding: 7px 13px;
-      border-radius: 20px;
-      font-size: 0.80rem;
+    .itec-career {
+      font-size: 0.72rem;
+      color: #34d399;
       font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-      transition: all 0.2s;
+      line-height: 1.2;
     }
-    .pill-btn:active { transform: scale(0.95); }
-    .pill-btn.active {
-      background: #0284c7;
-      border-color: #38bdf8;
-      color: #ffffff;
+    .itec-student-line {
+      font-size: 0.75rem;
+      color: #e2e8f0;
+      font-weight: 600;
+      margin-top: 3px;
     }
-    .pill-btn.pill-qgis {
-      background: #064e3b;
-      border-color: #10b981;
-      color: #34d399;
-    }
-    .pill-btn.pill-search {
-      background: #0f172a;
-      border-color: #facc15;
+    .itec-student-name {
       color: #facc15;
-    }
-
-    /* ======================================================== */
-    /* BOTONES FLOTANTES LATERALES                              */
-    /* ======================================================== */
-    .floating-tools {
-      position: absolute;
-      right: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      transition: opacity 0.2s;
-    }
-
-    .fab-btn {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: rgba(15, 23, 42, 0.92);
-      backdrop-filter: blur(8px);
-      border: 1.5px solid #334155;
-      color: #f8fafc;
-      font-size: 1.25rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.35);
-      transition: all 0.2s;
-    }
-    .fab-btn:active { transform: scale(0.90); }
-    .fab-btn.active { background: #10b981; border-color: #34d399; }
-    .fab-btn.highlight {
-      background: #f59e0b;
-      border-color: #facc15;
-      color: #0f172a;
-      animation: pulseGold 2s infinite;
-    }
-    @keyframes pulseGold {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.08); }
-    }
-
-    /* ======================================================== */
-    /* TARJETA INFERIOR (BOTTOM SHEET) PARA AISLAR / CORTAR     */
-    /* ======================================================== */
-    .bottom-sheet {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #0f172a;
-      border-top: 2.5px solid #10b981;
-      border-radius: 22px 22px 0 0;
-      box-shadow: 0 -8px 30px rgba(0,0,0,0.6);
-      z-index: 1500;
-      padding: 14px 18px 24px 18px;
-      transform: translateY(110%);
-      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .bottom-sheet.show { transform: translateY(0); }
-
-    .sheet-handle {
-      width: 42px;
-      height: 4px;
-      background: #475569;
-      border-radius: 2px;
-      margin: 0 auto 12px auto;
-    }
-
-    .sheet-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 12px;
-    }
-    .sheet-title-group h2 {
-      font-size: 1.3rem;
       font-weight: 800;
-      color: #34d399;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      text-decoration: underline;
     }
-    .sheet-title-group p {
-      font-size: 0.8rem;
-      color: #94a3b8;
-      font-weight: 500;
+    .itec-map-focus {
+      font-size: 0.70rem;
+      color: #38bdf8;
+      font-weight: 800;
       margin-top: 2px;
     }
-    .btn-close-sheet {
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #94a3b8;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      font-size: 1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
 
-    .sheet-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
-    }
-
-    .btn-action-qgis {
-      width: 100%;
-      min-height: 48px;
-      border: none;
-      border-radius: 12px;
-      font-size: 0.95rem;
-      font-weight: 800;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.2s;
-    }
-    .btn-action-qgis:active { transform: scale(0.97); }
-
-    .btn-isolate-primary {
-      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-      color: #ffffff;
-      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
-    }
-
-    .btn-cut-internal {
-      background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
-      color: #ffffff;
-      box-shadow: 0 4px 16px rgba(2, 132, 199, 0.35);
-    }
-
-    .btn-restore-layers {
-      background: #1e293b;
-      border: 1.5px solid #475569;
-      color: #cbd5e1;
-      font-size: 0.85rem;
-      min-height: 40px;
-    }
-
-    /* ======================================================== */
-    /* MODAL DE ÁRBOL DE CAPAS ESTILO QGIS (LAYERS PANEL)       */
-    /* ======================================================== */
-    .qgis-modal {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(8px);
-      z-index: 2200;
-      display: none;
-      justify-content: center;
-      align-items: flex-end;
-    }
-    .qgis-modal.show { display: flex; }
-
-    .qgis-modal-card {
-      background: #1e293b;
-      width: 100%;
-      max-width: 480px;
-      max-height: 75vh;
-      border-radius: 20px 20px 0 0;
-      border: 1px solid #334155;
-      border-bottom: none;
-      display: flex;
-      flex-direction: column;
-      padding: 16px 18px 24px 18px;
-      box-shadow: 0 -8px 30px rgba(0,0,0,0.6);
-    }
-    .qgis-modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      border-bottom: 1px solid #334155;
-      padding-bottom: 8px;
-    }
-    .qgis-modal-header h3 {
-      font-size: 1.05rem;
-      font-weight: 800;
-      color: #34d399;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-
-    .layers-group-title {
-      font-size: 0.72rem;
-      font-weight: 800;
-      color: #94a3b8;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin: 10px 0 6px 2px;
-    }
-
-    .qgis-layer-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #0f172a;
-      border: 1px solid #334155;
-      padding: 8px 12px;
-      border-radius: 8px;
-      margin-bottom: 6px;
-    }
-    .qgis-layer-left {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      flex: 1;
-      cursor: pointer;
-    }
-    .qgis-layer-left input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      accent-color: #10b981;
-      cursor: pointer;
-    }
-    .color-pill { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
-    .qgis-layer-name { font-size: 0.85rem; font-weight: 700; color: #f8fafc; }
-    .qgis-layer-actions { display: flex; align-items: center; gap: 4px; }
-    .btn-tiny {
-      background: #1e293b;
-      border: 1px solid #475569;
-      color: #f8fafc;
-      width: 30px;
-      height: 30px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8rem;
-      cursor: pointer;
-    }
-    .btn-tiny.delete { color: #f87171; border-color: #7f1d1d; }
-
-    /* ======================================================== */
-    /* MODAL DE BÚSQUEDA Y SELECCIÓN DE ENTIDADES               */
-    /* ======================================================== */
-    .search-modal {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(15, 23, 42, 0.88);
-      backdrop-filter: blur(8px);
-      z-index: 2800;
-      display: none;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 16px;
-      padding-top: 40px;
-    }
-    .search-modal.show { display: flex; }
-
-    .search-card {
-      background: #1e293b;
-      width: 100%;
-      max-width: 440px;
-      max-height: 80vh;
-      border-radius: 18px;
-      border: 1.5px solid #38bdf8;
-      display: flex;
-      flex-direction: column;
-      padding: 16px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.7);
-    }
-    .search-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    .search-header h3 {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: #38bdf8;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .search-input-box { position: relative; margin-bottom: 12px; }
-    .search-input {
-      width: 100%;
-      height: 44px;
-      background: #0f172a;
-      border: 1.5px solid #475569;
-      border-radius: 10px;
-      color: #f8fafc;
-      padding: 0 14px;
-      padding-left: 38px;
-      font-size: 0.95rem;
-      outline: none;
-    }
-    .search-input:focus { border-color: #38bdf8; }
-    .search-icon-inside {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 1rem;
-      color: #94a3b8;
-    }
-    .search-list {
-      overflow-y: auto;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      max-height: 50vh;
-    }
-    .search-item-btn {
-      width: 100%;
-      padding: 10px 14px;
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      color: #f8fafc;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 700;
-      transition: 0.15s;
-    }
-    .search-item-btn:hover { background: #0284c7; border-color: #38bdf8; }
-    .search-item-tag { font-size: 0.72rem; background: #334155; color: #94a3b8; padding: 2px 7px; border-radius: 4px; }
-
-    /* ======================================================== */
-    /* MODAL DE EXPORTACIÓN CARTOGRÁFICA (IMAGEN / PDF)         */
-    /* ======================================================== */
-    .export-modal {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(15, 23, 42, 0.88);
-      backdrop-filter: blur(8px);
-      z-index: 2500;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      padding: 16px;
-    }
-    .export-modal.show { display: flex; }
-
-    .export-card {
-      background: #1e293b;
-      width: 100%;
-      max-width: 420px;
-      border-radius: 18px;
-      border: 1.5px solid #38bdf8;
-      display: flex;
-      flex-direction: column;
-      padding: 18px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.7);
-    }
-    .export-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #334155;
-      padding-bottom: 10px;
-      margin-bottom: 14px;
-    }
-    .export-header h3 {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: #38bdf8;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-    .export-field { margin-bottom: 12px; }
-    .export-label { font-size: 0.8rem; font-weight: 700; color: #94a3b8; display: block; margin-bottom: 5px; }
-    .export-input {
-      width: 100%;
-      height: 42px;
-      background: #0f172a;
-      border: 1.5px solid #475569;
-      border-radius: 10px;
-      color: #f8fafc;
-      padding: 0 12px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      outline: none;
-    }
-    .export-input:focus { border-color: #38bdf8; }
-
-    .academic-box {
-      background: #0f172a;
-      border: 1px dashed #34d399;
-      border-radius: 10px;
-      padding: 10px 12px;
-      margin-bottom: 12px;
-      font-size: 0.78rem;
-      line-height: 1.4;
-    }
-    .academic-title { color: #34d399; font-weight: 800; font-size: 0.84rem; }
-    .academic-subtitle { color: #38bdf8; font-weight: 700; }
-
-    .centering-hint {
-      background: #064e3b22;
-      border: 1px solid #10b981;
-      padding: 7px 10px;
-      border-radius: 8px;
-      font-size: 0.76rem;
-      color: #34d399;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .btn-export-opt {
-      width: 100%;
-      min-height: 46px;
-      border: none;
-      border-radius: 10px;
-      font-size: 0.92rem;
-      font-weight: 800;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 8px;
-      transition: 0.2s;
-    }
-    .btn-export-opt:active { transform: scale(0.97); }
-    .btn-export-png { background: #059669; color: white; }
-    .btn-export-pdf { background: #dc2626; color: white; }
-
-    /* TOAST DE MENSAJES */
-    .toast-msg {
-      position: absolute;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #059669;
-      color: white;
-      padding: 8px 18px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      z-index: 3500;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-      display: none;
-      align-items: center;
-      gap: 8px;
-      max-width: 90vw;
-      text-align: center;
-    }
-
-    .map-polygon-label {
-      background: rgba(15, 23, 42, 0.90) !important;
-      border: 1px solid rgba(56, 189, 248, 0.6) !important;
-      color: #ffffff !important;
-      font-weight: 800 !important;
-      font-size: 11px !important;
-      padding: 2px 7px !important;
-      border-radius: 4px !important;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.5) !important;
-      pointer-events: none !important;
-    }
-    .map-polygon-label::before { display: none !important; }
-
-    @media (max-width: 768px) {
-      .itec-watermark-card {
-        top: 8px; left: 8px; right: 8px;
-        max-width: none; padding: 7px 10px;
-      }
-      .top-bar { top: 88px; }
-      .floating-tools { right: 8px; }
-      .fab-btn { width: 44px; height: 44px; font-size: 1.15rem; }
-    }
-  
     /* ROSA DE LOS VIENTOS (NORTE CARTOGRÁFICO) */
     .carto-north-arrow {
       position: absolute;
@@ -632,11 +116,11 @@
       right: 12px;
       z-index: 950;
       pointer-events: none;
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
       transition: all 0.3s;
     }
 
-    /* MINI LEYENDA CARTOGRÁFICA */
+    /* LEYENDA CARTOGRÁFICA */
     .carto-legend {
       position: absolute;
       bottom: 24px;
@@ -688,9 +172,9 @@
       padding-top: 2px;
     }
 
-    /* BARRA DE ESCALA LEAFLET PERSONALIZADA */
+    /* ESCALA LEAFLET */
     .leaflet-control-scale-line {
-      background: rgba(15, 23, 42, 0.88) !important;
+      background: rgba(15, 23, 42, 0.90) !important;
       backdrop-filter: blur(6px);
       border: 2px solid #38bdf8 !important;
       border-top: none !important;
@@ -699,6 +183,103 @@
       font-size: 0.72rem !important;
       padding: 2px 6px !important;
       box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    /* BARRA SUPERIOR DE PÍLDORAS */
+    .top-bar {
+      position: absolute;
+      top: 98px;
+      left: 12px;
+      right: 12px;
+      z-index: 1000;
+      display: flex;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .pills-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      pointer-events: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      width: 100%;
+    }
+    .pills-scroll::-webkit-scrollbar { display: none; }
+
+    .pill-btn {
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1.5px solid #334155;
+      color: #cbd5e1;
+      padding: 7px 13px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .pill-btn:active { transform: scale(0.96); }
+    .pill-btn.active {
+      background: #1e293b;
+      border-color: #38bdf8;
+      color: #38bdf8;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+    }
+    .pill-btn.pill-search {
+      border-color: #f59e0b;
+      color: #fbbf24;
+      background: rgba(245, 158, 11, 0.15);
+    }
+    .pill-btn.pill-qgis {
+      border-color: #10b981;
+      color: #34d399;
+    }
+
+    /* BOTONES FLOTANTES COMPACTOS Y RESPONSIVOS */
+    .floating-tools {
+      position: absolute;
+      top: 150px;
+      right: 12px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .fab-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1.5px solid #334155;
+      color: #f8fafc;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+      transition: all 0.2s ease;
+    }
+    .fab-btn:active { transform: scale(0.92); }
+    .fab-btn.highlight {
+      background: linear-gradient(135deg, #059669, #10b981);
+      border-color: #34d399;
+      color: #ffffff;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.5);
+    }
+    .fab-btn.active {
+      border-color: #38bdf8;
+      background: #0284c7;
+      color: #ffffff;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.6);
     }
 
     /* HUD DE MEDICIÓN */
@@ -723,7 +304,7 @@
     }
     .measure-hud.active { display: flex; }
     .measure-val-box { display: flex; flex-direction: column; gap: 2px; }
-    .measure-dist { color: #34d399; font-weight: 800; font-size: 0.9rem; }
+    .measure-dist { color: #34d399; font-weight: 800; font-size: 0.88rem; }
     .measure-area { color: #38bdf8; font-weight: 700; font-size: 0.78rem; }
     .measure-btn-group { display: flex; gap: 6px; }
     .btn-measure-action {
@@ -739,13 +320,126 @@
     .btn-measure-action.clear { border-color: #ef4444; color: #f87171; }
     .btn-measure-action.done { background: #059669; border-color: #10b981; }
 
+    /* PULSO GPS */
+    .gps-marker-pulse {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #0284c7;
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 0 14px #38bdf8;
+      position: relative;
+    }
+    .gps-marker-pulse::after {
+      content: '';
+      position: absolute;
+      top: -10px; left: -10px;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: rgba(56, 189, 248, 0.4);
+      animation: pulseGps 1.8s infinite ease-out;
+    }
+    @keyframes pulseGps {
+      0% { transform: scale(0.4); opacity: 1; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+
+    /* TARJETA INFERIOR (BOTTOM SHEET) */
+    .bottom-sheet {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 23, 42, 0.98);
+      backdrop-filter: blur(14px);
+      border-top: 2.5px solid #10b981;
+      border-radius: 22px 22px 0 0;
+      box-shadow: 0 -8px 30px rgba(0,0,0,0.6);
+      z-index: 1500;
+      padding: 14px 18px 24px 18px;
+      transform: translateY(110%);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .bottom-sheet.show { transform: translateY(0); }
+    .sheet-handle {
+      width: 42px;
+      height: 4px;
+      background: #475569;
+      border-radius: 2px;
+      margin: 0 auto 12px auto;
+    }
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .sheet-title-group h2 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #34d399;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sheet-title-group p {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+    .btn-close-sheet {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #94a3b8;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sheet-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .btn-action-qgis {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-action-qgis:active { transform: scale(0.98); }
+    .btn-isolate-primary {
+      background: linear-gradient(135deg, #059669, #10b981);
+      border: none;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+    }
+    .btn-cut-internal {
+      background: #1e293b;
+      border: 1.5px solid #38bdf8;
+      color: #38bdf8;
+    }
+
     /* CONTROL DE OPACIDAD EN BOTTOM SHEET */
     .sheet-opacity-box {
-      margin-top: 12px;
+      margin-top: 4px;
       background: #0f172a;
       border: 1px solid #334155;
       border-radius: 10px;
-      padding: 9px 12px;
+      padding: 8px 12px;
     }
     .opacity-label-row {
       display: flex;
@@ -776,38 +470,36 @@
       background: #10b981;
       border: 2px solid #ffffff;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
     }
 
-    /* PULSO GPS EN TIEMPO REAL */
-    .gps-marker-pulse {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #0284c7;
-      border: 2.5px solid #ffffff;
-      box-shadow: 0 0 14px #38bdf8;
-      position: relative;
-    }
-    .gps-marker-pulse::after {
-      content: '';
+    /* TOAST */
+    .toast-msg {
       position: absolute;
-      top: -10px; left: -10px;
-      width: 38px; height: 38px;
-      border-radius: 50%;
-      background: rgba(56, 189, 248, 0.4);
-      animation: pulseGps 1.8s infinite ease-out;
+      top: 140px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1.5px solid #38bdf8;
+      color: #f8fafc;
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      z-index: 2000;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
     }
-    @keyframes pulseGps {
-      0% { transform: scale(0.4); opacity: 1; }
-      100% { transform: scale(1.6); opacity: 0; }
-    }
+    .toast-msg.show { display: flex; }
 
-    /* MODAL DE MAPA BASE */
-    .basemap-modal {
+    /* MODALES GENERALES */
+    .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.7);
+      background: rgba(15, 23, 42, 0.75);
       backdrop-filter: blur(6px);
       z-index: 2100;
       display: none;
@@ -815,48 +507,186 @@
       justify-content: center;
       padding: 16px;
     }
-    .basemap-modal.show { display: flex; }
-    .basemap-card {
+    .modal-overlay.show { display: flex; }
+    .modal-card {
       background: #1e293b;
       border: 2px solid #38bdf8;
-      border-radius: 16px;
+      border-radius: 18px;
       padding: 18px;
       width: 100%;
-      max-width: 360px;
+      max-width: 440px;
+      max-height: 85vh;
+      overflow-y: auto;
       box-shadow: 0 16px 40px rgba(0,0,0,0.7);
     }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 8px;
+    }
+    .modal-header h3 {
+      font-size: 1.15rem;
+      color: #38bdf8;
+      font-weight: 800;
+    }
+
+    /* GRID DE CAJA DE HERRAMIENTAS (TOOLBOX) */
+    .toolbox-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .btn-toolbox-card {
+      background: #0f172a;
+      border: 1.5px solid #334155;
+      border-radius: 12px;
+      padding: 12px 10px;
+      color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-toolbox-card:active { transform: scale(0.96); }
+    .btn-toolbox-card .toolbox-icon { font-size: 1.6rem; }
+    .btn-toolbox-card .toolbox-label { font-size: 0.82rem; font-weight: 800; }
+    .btn-toolbox-card .toolbox-sub { font-size: 0.68rem; color: #94a3b8; }
+    .btn-toolbox-card.active { border-color: #10b981; background: rgba(16, 185, 129, 0.15); }
+
+    /* MODAL DE MAPA BASE */
     .basemap-grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 10px;
-      margin-top: 14px;
+      margin-top: 10px;
     }
     .btn-basemap-opt {
       background: #0f172a;
       border: 1.5px solid #334155;
       color: #f8fafc;
-      padding: 10px 14px;
-      border-radius: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
       font-size: 0.88rem;
       font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       cursor: pointer;
-      transition: all 0.2s;
     }
     .btn-basemap-opt.active {
       border-color: #10b981;
-      background: rgba(16, 185, 129, 0.15);
+      background: rgba(16, 185, 129, 0.18);
       color: #34d399;
     }
 
-    @media (max-width: 768px) {
-      .carto-north-arrow { top: 8px; right: 8px; transform: scale(0.85); transform-origin: top right; }
-      .carto-legend { bottom: 18px; right: 8px; padding: 6px 9px; font-size: 0.65rem; }
-      .measure-hud { top: 130px; font-size: 0.75rem; padding: 8px 12px; }
+    /* MODAL DE BÚSQUEDA */
+    .search-input-box {
+      position: relative;
+      margin-bottom: 12px;
     }
+    .search-input {
+      width: 100%;
+      padding: 12px 14px 12px 38px;
+      background: #0f172a;
+      border: 1.5px solid #475569;
+      border-radius: 12px;
+      color: #f8fafc;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .search-input:focus { border-color: #38bdf8; }
+    .search-icon-inside {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.1rem;
+    }
+    .search-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+    .btn-search-item {
+      background: #0f172a;
+      border: 1px solid #334155;
+      color: #f8fafc;
+      padding: 10px 14px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.88rem;
+    }
+    .btn-search-item:active { background: #334155; }
 
+    /* MODAL EXPORTACIÓN */
+    .academic-box {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1.5px dashed #38bdf8;
+      border-radius: 12px;
+      padding: 10px 14px;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+    .academic-title { color: #38bdf8; font-weight: 900; font-size: 0.88rem; }
+    .academic-subtitle { color: #34d399; font-weight: 700; font-size: 0.75rem; margin-top: 2px; }
+    .export-field { margin-bottom: 14px; }
+    .export-label { display: block; font-size: 0.82rem; font-weight: 700; color: #cbd5e1; margin-bottom: 6px; }
+    .export-input {
+      width: 100%;
+      padding: 11px 13px;
+      background: #0f172a;
+      border: 1.5px solid #475569;
+      border-radius: 10px;
+      color: #facc15;
+      font-size: 0.95rem;
+      font-weight: 800;
+      outline: none;
+    }
+    .btn-export-opt {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 0.90rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 8px;
+      border: none;
+    }
+    .btn-export-jpg { background: linear-gradient(135deg, #d97706, #f59e0b); color: #000; }
+    .btn-export-png { background: linear-gradient(135deg, #0284c7, #38bdf8); color: #000; }
+    .btn-export-pdf { background: linear-gradient(135deg, #059669, #10b981); color: #fff; }
+
+    /* RESPONSIVIDAD PARA CELULARES (MOBILE FIRST) */
+    @media (max-width: 768px) {
+      .itec-watermark-card {
+        top: 8px; left: 8px; right: 65px;
+        max-width: none;
+        padding: 7px 10px;
+      }
+      .top-bar { top: 84px; left: 8px; right: 8px; }
+      .carto-north-arrow { top: 8px; right: 8px; transform: scale(0.80); transform-origin: top right; }
+      .carto-legend { bottom: 18px; right: 8px; padding: 5px 8px; font-size: 0.62rem; }
+      .floating-tools { top: 135px; right: 8px; gap: 8px; }
+      .fab-btn { width: 44px; height: 44px; font-size: 1.15rem; }
+      .measure-hud { top: 125px; font-size: 0.75rem; padding: 7px 12px; }
+    }
   </style>
 </head>
 <body>
@@ -869,7 +699,7 @@
       <!-- MEMBRETE CARTOGRÁFICO OFICIAL ITEC 2026 -->
       <div id="itec-watermark" class="itec-watermark-card">
         <div class="itec-logo-row">
-          <span class="itec-logo-icon">🛡️</span>
+          <span class="itec-logo-icon">🏛️</span>
           <div>
             <div class="itec-title-main">INSTITUTO TECNOLÓGICO ITEC</div>
             <div class="itec-career">Carrera de Gestión de Riesgos - 2026</div>
@@ -879,22 +709,18 @@
           Estudiante: <span id="display-student-name" class="itec-student-name">Estudiante ITEC</span>
         </div>
         <div id="display-map-focus" class="itec-map-focus">
-          Zona: Todo el Ecuador (23 Provincias)
+          Zona: Todo el Ecuador (24 Provincias)
         </div>
       </div>
 
-      
       <!-- ROSA DE LOS VIENTOS (NORTE CARTOGRÁFICO OFICIAL) -->
       <div id="carto-north-arrow" class="carto-north-arrow" title="Norte Cartográfico">
         <svg viewBox="0 0 100 100" width="52" height="52">
           <circle cx="50" cy="50" r="46" fill="rgba(15, 23, 42, 0.88)" stroke="#38bdf8" stroke-width="2.5"/>
-          <!-- Aguja Norte (Cyan / Blanco) -->
           <polygon points="50,14 58,50 50,44" fill="#38bdf8"/>
           <polygon points="50,14 42,50 50,44" fill="#ffffff"/>
-          <!-- Aguja Sur (Gris / Oscuro) -->
           <polygon points="50,86 58,50 50,56" fill="#475569"/>
           <polygon points="50,86 42,50 50,56" fill="#64748b"/>
-          <!-- Agujas Este / Oeste -->
           <polygon points="86,50 50,58 56,50" fill="#475569"/>
           <polygon points="86,50 50,42 56,50" fill="#64748b"/>
           <polygon points="14,50 50,58 44,50" fill="#475569"/>
@@ -913,7 +739,7 @@
         </div>
         <div class="legend-item">
           <span class="legend-swatch swatch-boundary"></span>
-          <span>Límites Políticos</span>
+          <span>Límites DPA Ecuador</span>
         </div>
         <div class="legend-datum">Datum: WGS 84 • ITEC 2026</div>
       </div>
@@ -922,9 +748,7 @@
       <div id="map"></div>
     </div>
 
-    <!-- MENSAJE TOAST -->
-    
-    <!-- HUD FLOTANTE DE MEDICIÓN (DISTANCIA Y ÁREA) -->
+    <!-- HUD DE MEDICIÓN -->
     <div id="measure-hud" class="measure-hud">
       <span>📏</span>
       <div class="measure-val-box">
@@ -932,34 +756,25 @@
         <div id="measure-area-val" class="measure-area">Área: 3+ puntos necesarios</div>
       </div>
       <div class="measure-btn-group">
-        <button id="btn-measure-clear" class="btn-measure-action clear" title="Borrar puntos">Limpiar</button>
-        <button id="btn-measure-done" class="btn-measure-action done" title="Terminar">Listo</button>
+        <button id="btn-measure-clear" class="btn-measure-action clear">Limpiar</button>
+        <button id="btn-measure-done" class="btn-measure-action done">Listo</button>
       </div>
     </div>
 
+    <!-- MENSAJE TOAST -->
     <div id="toast-msg" class="toast-msg">
-      <span>🎉</span> <span id="toast-text">¡Mensaje!</span>
+      <span>🔔</span> <span id="toast-text">¡Mensaje!</span>
     </div>
 
-    <!-- BARRA SUPERIOR: HERRAMIENTAS Y PÍLDORAS -->
+    <!-- BARRA SUPERIOR DE PÍLDORAS -->
     <div class="top-bar">
       <div class="pills-scroll">
-        <!-- SELECTOR DE ENTIDADES -->
         <button id="pill-search-entity" class="pill-btn pill-search">
           🔍 Buscar Entidad
         </button>
-
-        <!-- ÁRBOL DE CAPAS ESTILO QGIS -->
-        <button id="pill-open-qgis-layers" class="pill-btn pill-qgis">
-          📂 Capas QGIS (<span id="count-qgis-layers">0</span>)
-        </button>
-
-        <!-- PÍLDORA RESTAURAR TODAS LAS CAPAS -->
         <button id="pill-restore-all" class="pill-btn" style="display: none; border-color: #ef4444; color: #f87171;">
           👁️ Restaurar Capas
         </button>
-
-        <!-- CAPAS RÁPIDAS -->
         <button id="pill-provincias" class="pill-btn active">
           🏛️ Provincias
         </button>
@@ -972,40 +787,13 @@
       </div>
     </div>
 
-    <!-- BOTONES FLOTANTES LATERALES -->
+    <!-- BOTONES FLOTANTES COMPACTOS (SOLO 4 BOTONES LIMPIOS) -->
     <div class="floating-tools">
       <!-- 📸 DESCARGAR MAPA CENTRADO -->
-      <button id="btn-open-export" class="fab-btn highlight" title="Descargar como Imagen o PDF">
+      <button id="btn-open-export" class="fab-btn highlight" title="Descargar como JPG, PNG o PDF">
         📸
       </button>
 
-      <!-- 🔍 SELECTOR RÁPIDO DE ENTIDADES -->
-      <button id="btn-quick-select" class="fab-btn" title="Buscar / Seleccionar Entidad">
-        🔍
-      </button>
-
-      <!-- 📂 PANEL DE CAPAS QGIS -->
-      <button id="btn-quick-layers" class="fab-btn" title="Ver Árbol de Capas QGIS">
-        📂
-      </button>
-
-      <!-- 📝 CAMBIAR NOMBRE DEL ALUMNO -->
-      <button id="btn-edit-student" class="fab-btn" title="Poner mi Nombre de Estudiante">
-        📝
-      </button>
-
-      <!-- 🏷️ NOMBRES -->
-      <button id="btn-toggle-names" class="fab-btn" title="Mostrar/Ocultar Nombres">
-        🏷️
-      </button>
-
-      <!-- 🛰️ SATÉLITE -->
-      <button id="btn-toggle-basemap" class="fab-btn" title="Cambiar a Satélite">
-        🛰️
-      </button>
-
-      <!-- 🎯 CENTRAR ECUADOR -->
-      
       <!-- 📏 HERRAMIENTA DE MEDICIÓN -->
       <button id="btn-toggle-measure" class="fab-btn" title="Medir Distancias y Áreas">
         📏
@@ -1016,13 +804,9 @@
         📍
       </button>
 
-      <!-- ⛶ PANTALLA COMPLETA -->
-      <button id="btn-fullscreen-toggle" class="fab-btn" title="Pantalla Completa">
-        ⛶
-      </button>
-
-      <button id="btn-center-ecuador" class="fab-btn" title="Centrar Ecuador">
-        🎯
+      <!-- 🧰 CAJA DE HERRAMIENTAS Y MAPAS BASE -->
+      <button id="btn-open-toolbox" class="fab-btn" title="Más Herramientas y Mapas Base">
+        🧰
       </button>
     </div>
 
@@ -1033,19 +817,21 @@
       <div class="sheet-header">
         <div class="sheet-title-group">
           <h2 id="sheet-name">📍 PICHINCHA</h2>
-          <p id="sheet-meta">Provincia · Toca abajo para aislar o cortar</p>
+          <p id="sheet-meta">Provincia • Toca abajo para aislar o cortar</p>
         </div>
         <button id="btn-close-sheet" class="btn-close-sheet">✕</button>
       </div>
 
       <div class="sheet-actions">
-        <!-- BOTÓN PRINCIPAL: AISLAR ESTA ENTIDAD Y APAGAR LAS DEMÁS CAPAS -->
         <button id="btn-isolate-and-hide-others" class="btn-action-qgis btn-isolate-primary">
           ✂️ CORTAR Y AISLAR (APAGAR OTRAS CAPAS)
         </button>
         
-        
-        <!-- CONTROL DESLIZANTE DE TRANSPARENCIA -->
+        <button id="btn-cut-inner-divisions" class="btn-action-qgis btn-cut-internal">
+          🔍 VER DIVISIONES INTERNAS (AISLADAS)
+        </button>
+
+        <!-- CONTROL DE TRANSPARENCIA -->
         <div class="sheet-opacity-box">
           <div class="opacity-label-row">
             <span>🎚️ Transparencia de la Entidad:</span>
@@ -1054,153 +840,165 @@
           <input type="range" id="input-layer-opacity" min="15" max="100" value="65" class="opacity-slider" />
         </div>
 
-        <!-- BOTÓN SECUNDARIO: CORTAR DIVISIONES INTERNAS -->
-        <button id="btn-cut-inner-divisions" class="btn-action-qgis btn-cut-internal">
-          ✂️ VER DIVISIONES INTERNAS AISLADAS
-        </button>
-
-        <button id="btn-restore-from-sheet" class="btn-action-qgis btn-restore-layers" style="display: none;">
-          👁️ Volver a Encender Todas las Capas Base
+        <button id="btn-restore-from-sheet" class="btn-action-qgis" style="display: none; background: #334155; color: #f87171;">
+          👁️ Restaurar y Ver Todo el Ecuador
         </button>
       </div>
     </div>
 
-    <!-- MODAL DE ÁRBOL DE CAPAS TIPO QGIS (LAYERS TREE) -->
-    <div id="qgis-modal" class="qgis-modal">
-      <div class="qgis-modal-card">
-        <div class="qgis-modal-header">
-          <h3>📂 Árbol de Capas QGIS</h3>
-          <button id="btn-close-qgis" class="btn-close-sheet">✕</button>
+    <!-- MODAL CAJA DE HERRAMIENTAS (TOOLBOX) -->
+    <div id="toolbox-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>🧰 Caja de Herramientas ITEC</h3>
+          <button id="btn-close-toolbox" class="btn-close-sheet">✕</button>
         </div>
-
-        <div style="overflow-y: auto; flex: 1;">
-          <!-- Sección: Capas Aisladas y Recortes -->
-          <div id="group-isolated-layers" style="display: none;">
-            <div class="layers-group-title" style="color: #34d399;">✂️ Capas Aisladas / Recortes:</div>
-            <div id="list-isolated-layers"></div>
-          </div>
-
-          <!-- Sección: Capas Base del Sistema -->
-          <div class="layers-group-title">🗺️ Capas Base del Sistema:</div>
-
-          <div class="qgis-layer-row">
-            <label class="qgis-layer-left" for="qgis-chk-provincias">
-              <input type="checkbox" id="qgis-chk-provincias" checked>
-              <span class="color-pill" style="background: #0284c7;"></span>
-              <span class="qgis-layer-name">Provincias (23)</span>
-            </label>
-          </div>
-
-          <div class="qgis-layer-row">
-            <label class="qgis-layer-left" for="qgis-chk-cantones">
-              <input type="checkbox" id="qgis-chk-cantones">
-              <span class="color-pill" style="background: #eab308;"></span>
-              <span class="qgis-layer-name">Cantones (220)</span>
-            </label>
-          </div>
-
-          <div class="qgis-layer-row">
-            <label class="qgis-layer-left" for="qgis-chk-parroquias">
-              <input type="checkbox" id="qgis-chk-parroquias">
-              <span class="color-pill" style="background: #ef4444;"></span>
-              <span class="qgis-layer-name">Parroquias (995)</span>
-            </label>
-          </div>
-
-          <div class="qgis-layer-row">
-            <label class="qgis-layer-left" for="qgis-chk-periferia">
-              <input type="checkbox" id="qgis-chk-periferia" checked>
-              <span class="color-pill" style="background: #7e22ce;"></span>
-              <span class="qgis-layer-name">Límite Nacional (1)</span>
-            </label>
-          </div>
+        <div class="toolbox-grid">
+          <button id="card-open-basemap" class="btn-toolbox-card">
+            <span class="toolbox-icon">🗺️</span>
+            <span class="toolbox-label">Mapa Base</span>
+            <span class="toolbox-sub">Satelital / Relieve / Calles</span>
+          </button>
+          <button id="card-toggle-names" class="btn-toolbox-card">
+            <span class="toolbox-icon">🏷️</span>
+            <span id="label-names-status" class="toolbox-label">Nombres: No</span>
+            <span class="toolbox-sub">Etiquetas en polígonos</span>
+          </button>
+          <button id="card-edit-student" class="btn-toolbox-card">
+            <span class="toolbox-icon">👤</span>
+            <span class="toolbox-label">Mi Nombre</span>
+            <span class="toolbox-sub">Editar alumno ITEC</span>
+          </button>
+          <button id="card-open-qgis-layers" class="btn-toolbox-card">
+            <span class="toolbox-icon">📑</span>
+            <span class="toolbox-label">Capas QGIS</span>
+            <span class="toolbox-sub">Árbol de capas activas</span>
+          </button>
+          <button id="card-center-ecuador" class="btn-toolbox-card">
+            <span class="toolbox-icon">🇪🇨</span>
+            <span class="toolbox-label">Todo el Ecuador</span>
+            <span class="toolbox-sub">Re-centrar vista nacional</span>
+          </button>
+          <button id="card-fullscreen-toggle" class="btn-toolbox-card">
+            <span class="toolbox-icon">⛶</span>
+            <span class="toolbox-label">Pantalla Completa</span>
+            <span class="toolbox-sub">Modo App sin barras</span>
+          </button>
         </div>
       </div>
     </div>
 
-    
-    <!-- MODAL SELECTOR DE MAPA BASE -->
-    <div id="basemap-modal" class="basemap-modal">
-      <div class="basemap-card">
-        <div class="search-header">
+    <!-- MODAL MAPA BASE MULTICAPA -->
+    <div id="basemap-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
           <h3>🗺️ Seleccionar Mapa Base</h3>
           <button id="btn-close-basemap" class="btn-close-sheet">✕</button>
         </div>
         <div class="basemap-grid">
           <button id="opt-base-osm" class="btn-basemap-opt active">
-            <span>🗺️</span>
+            <span style="font-size: 1.5rem;">🗺️</span>
             <div>
               <div>Callejero Político</div>
               <small style="color: #94a3b8; font-weight: 400;">OpenStreetMap estándar</small>
             </div>
           </button>
           <button id="opt-base-sat" class="btn-basemap-opt">
-            <span>🛰️</span>
+            <span style="font-size: 1.5rem;">🛰️</span>
             <div>
               <div>Foto Satelital Real</div>
               <small style="color: #94a3b8; font-weight: 400;">Esri World Imagery HD</small>
             </div>
           </button>
           <button id="opt-base-topo" class="btn-basemap-opt">
-            <span>⛰️</span>
+            <span style="font-size: 1.5rem;">⛰️</span>
             <div>
               <div>Relieve Topográfico</div>
-              <small style="color: #94a3b8; font-weight: 400;">OpenTopoMap con curvas y sombras</small>
+              <small style="color: #94a3b8; font-weight: 400;">OpenTopoMap (Curvas y sombras)</small>
             </div>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- MODAL DE BÚSQUEDA Y SELECCIÓN DE ENTIDADES -->
-    <div id="search-modal" class="search-modal">
-      <div class="search-card">
-        <div class="search-header">
-          <h3>🔍 Seleccionar Provincia o Cantón</h3>
-          <button id="btn-close-search" class="btn-close-sheet">✕</button>
+    <!-- MODAL DEL ÁRBOL DE CAPAS QGIS -->
+    <div id="qgis-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>📑 Árbol de Capas QGIS</h3>
+          <button id="btn-close-qgis" class="btn-close-sheet">✕</button>
         </div>
-
-        <div class="search-input-box">
-          <span class="search-icon-inside">🔍</span>
-          <input type="text" id="input-search-text" class="search-input" placeholder="Escribe: Guayas, Azuay, Quito, Cuenca..." autofocus />
+        <div id="group-isolated-layers" style="display: none; margin-bottom: 14px;">
+          <h4 style="font-size: 0.82rem; color: #34d399; margin-bottom: 8px;">✂️ Capas Cortadas / Aisladas</h4>
+          <div id="list-isolated-layers" style="display: flex; flex-direction: column; gap: 6px;"></div>
         </div>
-
-        <div id="search-results-list" class="search-list">
-          <!-- Lista generada dinámicamente -->
+        <div>
+          <h4 style="font-size: 0.82rem; color: #38bdf8; margin-bottom: 8px;">🏛️ Capas Base del Ecuador</h4>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; cursor: pointer;">
+              <input type="checkbox" id="qgis-chk-provincias" checked>
+              <span>Provincias (24)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; cursor: pointer;">
+              <input type="checkbox" id="qgis-chk-cantones">
+              <span>Cantones (221)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; cursor: pointer;">
+              <input type="checkbox" id="qgis-chk-parroquias">
+              <span>Parroquias (995)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; cursor: pointer;">
+              <input type="checkbox" id="qgis-chk-periferia" checked>
+              <span>Límite Nacional (1)</span>
+            </label>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- MODAL DE EXPORTACIÓN CARTOGRÁFICA (IMAGEN / PDF) -->
-    <div id="export-modal" class="export-modal">
-      <div class="export-card">
-        <div class="export-header">
-          <h3>🎓 Mi Producto Cartográfico</h3>
+    <!-- MODAL DE BÚSQUEDA Y SELECCIÓN DE ENTIDADES -->
+    <div id="search-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>🔍 Buscar Provincia o Cantón</h3>
+          <button id="btn-close-search" class="btn-close-sheet">✕</button>
+        </div>
+        <div class="search-input-box">
+          <span class="search-icon-inside">🔍</span>
+          <input type="text" id="input-search-text" class="search-input" placeholder="Escribe: Loja, Pichincha, Guayas, Cuenca..." autofocus />
+        </div>
+        <div id="search-results-list" class="search-list"></div>
+      </div>
+    </div>
+
+    <!-- MODAL DE EXPORTACIÓN CARTOGRÁFICA -->
+    <div id="export-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>📸 Mi Producto Cartográfico</h3>
           <button id="btn-close-export" class="btn-close-sheet">✕</button>
         </div>
 
         <div class="academic-box">
-          <div class="academic-title">🛡️ CARRERA DE GESTIÓN DE RIESGOS</div>
-          <div class="academic-subtitle">INSTITUTO TECNOLÓGICO ITEC 2026</div>
+          <div class="academic-title">🏛️ CARRERA DE GESTIÓN DE RIESGOS</div>
+          <div class="academic-subtitle">INSTITUTO SUPERIOR TECNOLÓGICO ITEC 2026</div>
         </div>
 
-        <div id="export-centering-status" class="centering-hint">
-          <span>🎯</span> <span id="export-focus-text">La imagen saldrá centrada y sin botones de pantalla.</span>
+        <div id="export-centering-status" style="font-size: 0.78rem; color: #94a3b8; margin-bottom: 12px; text-align: center;">
+          <span id="export-focus-text">La imagen se descargará exactamente con el encuadre actual y membrete oficial.</span>
         </div>
 
-        <!-- Campo Nombre del Alumno -->
         <div class="export-field">
           <label class="export-label" for="input-student-name">👤 Nombre del Estudiante:</label>
           <input type="text" id="input-student-name" class="export-input" placeholder="Tu Nombre y Apellido" />
         </div>
 
-        
-        <button id="btn-download-jpg" class="btn-export-opt" style="background: linear-gradient(135deg, #d97706, #f59e0b); color: #000; font-weight: 800;">
+        <button id="btn-download-jpg" class="btn-export-opt btn-export-jpg">
           🖼️ Descargar como Imagen JPG (Alta Calidad)
         </button>
-
+        
         <button id="btn-download-image" class="btn-export-opt btn-export-png">
-          📸 Descargar Imagen Centrada (PNG)
+          🖼️ Descargar como Imagen PNG (Sin Pérdida)
         </button>
         
         <button id="btn-download-pdf" class="btn-export-opt btn-export-pdf">
@@ -1219,7 +1017,7 @@
   <script src="data_js/provincias.js"></script>
 
   <script>
-    // 1. Inicializar mapa
+    // 1. Inicializar mapa con soporte de zoom continuo
     const map = L.map('map', {
       center: [-1.45, -78.50],
       zoom: 7,
@@ -1237,7 +1035,6 @@
     map.createPane('parroquiasPane').style.zIndex = 430;
     map.createPane('isolatedPane').style.zIndex = 500;
 
-    // Capas Base
     // Capas Base Múltiples (Callejero, Satelital, Relieve Topográfico)
     const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, crossOrigin: true }).addTo(map);
     const satLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, crossOrigin: true });
@@ -1253,6 +1050,7 @@
     let showNames = false;
     let selectedEntity = null;
     let hasIsolatedLayer = false;
+    let currentOpacity = 0.65;
 
     // Estudiante ITEC
     let studentName = localStorage.getItem('itec_student_name') || 'Estudiante ITEC';
@@ -1270,30 +1068,30 @@
     }
 
     function showToast(msg) {
-      const toast = document.getElementById('toast-msg');
+      const t = document.getElementById('toast-msg');
       document.getElementById('toast-text').innerText = msg;
-      toast.style.display = 'flex';
-      setTimeout(() => { toast.style.display = 'none'; }, 3200);
+      t.classList.add('show');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
     }
 
-    function getName(props) {
-      if (!props) return 'Ecuador';
-      return props.DPA_DESPAR || props.DPA_DESCAN || props.DPA_DESPRO || 'Ecuador';
+    // Funciones de Propiedades
+    function getName(p) {
+      return p.DPA_DESPRO || p.DPA_DESCAN || p.DPA_DESPAR || p.nombre || 'Entidad';
+    }
+    function getType(p) {
+      if (p.DPA_DESPAR) return 'Parroquia';
+      if (p.DPA_DESCAN) return 'Cantón';
+      if (p.DPA_DESPRO) return 'Provincia';
+      return 'Límite';
     }
 
-    function getType(props) {
-      if (!props) return 'Límite';
-      if (props.DPA_PARROQ || props.DPA_DESPAR) return 'Parroquia';
-      if (props.DPA_CANTON || props.DPA_DESCAN) return 'Cantón';
-      if (props.DPA_PROVIN || props.DPA_DESPRO) return 'Provincia';
-      return 'Límite Nacional';
-    }
-
+    // Estilos Base
     const baseStyles = {
-      periferia: { color: '#7e22ce', weight: 2.5, fillColor: '#7e22ce', fillOpacity: 0.04 },
-      provincias: { color: '#0284c7', weight: 2.2, fillColor: '#38bdf8', fillOpacity: 0.28 },
-      cantones: { color: '#b45309', weight: 1.4, fillColor: '#facc15', fillOpacity: 0.25 },
-      parroquias: { color: '#b91c1c', weight: 1.0, fillColor: '#f87171', fillOpacity: 0.22 }
+      periferia: { color: '#7e22ce', weight: 2.5, opacity: 0.9, fill: false },
+      provincias: { color: '#0284c7', weight: 1.8, opacity: 0.9, fillColor: '#0284c7', fillOpacity: 0.15 },
+      cantones: { color: '#f59e0b', weight: 1.2, opacity: 0.8, fillColor: '#f59e0b', fillOpacity: 0.12 },
+      parroquias: { color: '#ef4444', weight: 0.8, opacity: 0.7, fillColor: '#ef4444', fillOpacity: 0.08 }
     };
 
     function createInteractiveLayer(data, layerKey) {
@@ -1308,6 +1106,7 @@
           if (!showNames) layer.closeTooltip();
 
           layer.on('click', function(e) {
+            if (isMeasuring) return; // Si mide, no selecciona
             L.DomEvent.stopPropagation(e);
             selectEntity(layer, feature, layerKey);
           });
@@ -1315,12 +1114,10 @@
       });
     }
 
-    // ========================================================
-    
     // =========================================================================
-    // FUNCIÓN DE ENCUADRE Y CENTRADO EXACTO DE ENTIDADES (INTERACTIVO Y EXPORTACIÓN)
+    // FUNCIÓN DE ENCUADRE Y CENTRADO EXACTO DE ENTIDADES
     // =========================================================================
-    function focusAndCenterLayer(targetLayer, isExport = false) {
+    function focusAndCenterLayer(targetLayer) {
       if (!targetLayer) return;
       map.invalidateSize();
       const bounds = targetLayer.getBounds ? targetLayer.getBounds() : targetLayer;
@@ -1328,28 +1125,16 @@
 
       const isMobile = window.innerWidth <= 768;
 
-      if (isExport) {
-        // EN EXPORTACIÓN: Las barras de botones flotantes se ocultan temporalmente.
-        // Solo el membrete oficial ITEC 2026 queda visible en la esquina superior izquierda.
-        map.fitBounds(bounds, {
-          paddingTopLeft: [35, isMobile ? 80 : 88],
-          paddingBottomRight: [35, 35],
-          maxZoom: 13.5,
-          animate: false
-        });
-      } else {
-        // EN PANTALLA ACTIVA (INTERACCIÓN):
-        // Arriba están: Membrete ITEC + Píldoras de capas / herramientas (~125-136px).
-        // Abajo el campo visual está totalmente despejado tras aislar la entidad.
-        map.fitBounds(bounds, {
-          paddingTopLeft: [24, isMobile ? 132 : 145],
-          paddingBottomRight: [24, isMobile ? 36 : 45],
-          maxZoom: 13.5,
-          animate: true
-        });
-      }
+      // Centrado con márgenes que respetan la interfaz en pantalla
+      map.fitBounds(bounds, {
+        paddingTopLeft: [24, isMobile ? 120 : 135],
+        paddingBottomRight: [24, isMobile ? 35 : 45],
+        maxZoom: 13.5,
+        animate: true
+      });
     }
 
+    // ========================================================
     // SELECCIÓN FORMAL DE ENTIDAD CON CENTRADO ÓPTIMO
     // ========================================================
     function selectEntity(layer, feature, layerKey, autoZoom = false) {
@@ -1362,13 +1147,12 @@
       }
 
       selectedEntity = { layer, feature, layerKey, name, type, props };
-
-      layer.setStyle({ weight: 4.0, color: '#ffffff', fillColor: '#f59e0b', fillOpacity: 0.75 });
+      layer.setStyle({ weight: 4.0, color: '#ffffff', fillColor: '#f59e0b', fillOpacity: currentOpacity });
 
       displayMapFocus.innerText = `Zona: ${type} ${name}`;
 
       if (autoZoom) {
-        focusAndCenterLayer(layer, false);
+        focusAndCenterLayer(layer);
       }
 
       openBottomSheet(name, type, props);
@@ -1385,23 +1169,22 @@
     function openBottomSheet(name, type, props) {
       sheetName.innerText = `📍 ${name}`;
       let metaText = `${type}`;
-      if (props.SUPERFICIE) metaText += ` · ${Number(props.SUPERFICIE).toLocaleString('es-EC')} km²`;
+      if (props.SUPERFICIE) metaText += ` • ${Number(props.SUPERFICIE).toLocaleString('es-EC')} km²`;
       sheetMeta.innerText = metaText;
 
       btnIsolate.innerHTML = `✂️ CORTAR Y AISLAR ${type.toUpperCase()}`;
 
       if (type === 'Provincia') {
         btnCutInner.style.display = 'flex';
-        btnCutInner.innerHTML = `✂️ VER CANTONES DE ${name} (AISLADOS)`;
+        btnCutInner.innerHTML = `🔍 VER CANTONES DE ${name} (AISLADOS)`;
       } else if (type === 'Cantón') {
         btnCutInner.style.display = 'flex';
-        btnCutInner.innerHTML = `✂️ VER PARROQUIAS DE ${name} (AISLADAS)`;
+        btnCutInner.innerHTML = `🔍 VER PARROQUIAS DE ${name} (AISLADAS)`;
       } else {
         btnCutInner.style.display = 'none';
       }
 
       btnRestoreSheet.style.display = hasIsolatedLayer ? 'flex' : 'none';
-
       bottomSheet.classList.add('show');
     }
 
@@ -1414,7 +1197,10 @@
     }
 
     document.getElementById('btn-close-sheet').addEventListener('click', closeBottomSheet);
-    map.on('click', closeBottomSheet);
+    map.on('click', function(e) {
+      if (isMeasuring) return;
+      closeBottomSheet();
+    });
 
     async function loadDataFile(globalName, jsFile, jsonFile) {
       if (window[globalName]) return window[globalName];
@@ -1436,9 +1222,7 @@
       });
     }
 
-    // ==============================================================
-    // ✂️ APAGAR TODAS LAS CAPAS BASE
-    // ==============================================================
+    // Apagar / Restaurar capas base
     function turnOffAllBaseLayers() {
       ['provincias', 'cantones', 'parroquias', 'periferia'].forEach(k => {
         if (baseLayers[k] && map.hasLayer(baseLayers[k])) {
@@ -1452,9 +1236,6 @@
       document.getElementById('pill-restore-all').style.display = 'flex';
     }
 
-    // ==============================================================
-    // 👁️ ENCENDER TODAS LAS CAPAS BASE
-    // ==============================================================
     function restoreAllBaseLayers() {
       Object.values(isolatedLayers).forEach(item => {
         if (map.hasLayer(item.layer)) map.removeLayer(item.layer);
@@ -1483,7 +1264,7 @@
     document.getElementById('btn-restore-from-sheet').addEventListener('click', restoreAllBaseLayers);
 
     // ==============================================================
-    // ✂️ ACCIÓN 1: CORTAR Y AISLAR ESTA ENTIDAD CON CENTRADO EXACTO
+    // ACCIÓN 1: CORTAR Y AISLAR CON CENTRADO EXACTO
     // ==============================================================
     btnIsolate.addEventListener('click', function() {
       if (!selectedEntity || !selectedEntity.feature) return;
@@ -1492,10 +1273,8 @@
       const name = selectedEntity.name;
       const type = selectedEntity.type;
 
-      // 1. Apagar todas las capas base
       turnOffAllBaseLayers();
 
-      // 2. Crear la capa aislada
       const geojson = { type: 'FeatureCollection', features: [feature] };
       const layerId = 'isolated_' + Date.now();
 
@@ -1505,7 +1284,7 @@
           color: '#ffffff',
           weight: 3.5,
           fillColor: '#059669',
-          fillOpacity: 0.65
+          fillOpacity: currentOpacity
         },
         onEachFeature: function(f, l) {
           l.bindTooltip(name, { permanent: true, direction: 'center', className: 'map-polygon-label' }).openTooltip();
@@ -1522,19 +1301,16 @@
       };
 
       hasIsolatedLayer = true;
-
-      // 3. Centrado óptimo de la entidad aislada
-      focusAndCenterLayer(newLayer, false);
+      focusAndCenterLayer(newLayer);
 
       displayMapFocus.innerText = `Zona Aislada: ${type} ${name}`;
-
       updateQgisLayersList();
       closeBottomSheet();
-      showToast(`✂️ Capas apagadas. ${name} centrada en pantalla.`);
+      showToast(`✂️ ${name} aislada y centrada.`);
     });
 
     // ==============================================================
-    // ✂️ ACCIÓN 2: VER DIVISIONES INTERNAS AISLADAS
+    // ACCIÓN 2: VER DIVISIONES INTERNAS AISLADAS
     // ==============================================================
     btnCutInner.addEventListener('click', async function() {
       if (!selectedEntity) return;
@@ -1574,7 +1350,7 @@
           color: '#ffffff',
           weight: 2.2,
           fillColor: '#10b981',
-          fillOpacity: 0.55
+          fillOpacity: currentOpacity
         },
         onEachFeature: function(f, l) {
           const subName = getName(f.properties);
@@ -1593,71 +1369,75 @@
       };
 
       hasIsolatedLayer = true;
-
-      // Centrado óptimo de las divisiones aisladas
-      focusAndCenterLayer(newLayer, false);
+      focusAndCenterLayer(newLayer);
 
       displayMapFocus.innerText = `Zona Aislada: ${layerTitle} (${cutFeatures.length})`;
-
       updateQgisLayersList();
       closeBottomSheet();
       showToast(`✂️ ${layerTitle} centrada en pantalla.`);
     });
 
-    // ========================================================
-    // MODAL DEL ÁRBOL DE CAPAS QGIS
-    // ========================================================
+    // Control de Opacidad
+    const inputOpacity = document.getElementById('input-layer-opacity');
+    const labelOpacityVal = document.getElementById('label-opacity-val');
+    if (inputOpacity) {
+      inputOpacity.addEventListener('input', function() {
+        const val = parseInt(this.value, 10);
+        if (labelOpacityVal) labelOpacityVal.innerText = `${val}%`;
+        currentOpacity = val / 100;
+
+        Object.values(isolatedLayers).forEach(item => {
+          if (item.layer) item.layer.setStyle({ fillOpacity: currentOpacity });
+        });
+        if (selectedEntity && selectedEntity.layer) {
+          selectedEntity.layer.setStyle({ fillOpacity: currentOpacity });
+        }
+      });
+    }
+
+    // Modal QGIS Layers
     const qgisModal = document.getElementById('qgis-modal');
     const listIsolatedLayers = document.getElementById('list-isolated-layers');
     const groupIsolatedLayers = document.getElementById('group-isolated-layers');
 
     function openQgisModal() { qgisModal.classList.add('show'); }
-    document.getElementById('pill-open-qgis-layers').addEventListener('click', openQgisModal);
-    document.getElementById('btn-quick-layers').addEventListener('click', openQgisModal);
     document.getElementById('btn-close-qgis').addEventListener('click', () => qgisModal.classList.remove('show'));
 
     function updateQgisLayersList() {
+      listIsolatedLayers.innerHTML = '';
       const keys = Object.keys(isolatedLayers);
-      document.getElementById('count-qgis-layers').innerText = keys.length;
 
       if (keys.length === 0) {
         groupIsolatedLayers.style.display = 'none';
-        listIsolatedLayers.innerHTML = '';
         return;
       }
-
       groupIsolatedLayers.style.display = 'block';
-      listIsolatedLayers.innerHTML = '';
 
       keys.forEach(k => {
         const item = isolatedLayers[k];
         const row = document.createElement('div');
-        row.className = 'qgis-layer-row';
+        row.style.display = 'flex';
+        row.style.alignItems = 'center';
+        row.style.justifyContent = 'space-between';
+        row.style.background = '#0f172a';
+        row.style.padding = '8px 10px';
+        row.style.borderRadius = '8px';
+
         row.innerHTML = `
-          <label class="qgis-layer-left" for="chk-${item.id}">
-            <input type="checkbox" id="chk-${item.id}" ${map.hasLayer(item.layer) ? 'checked' : ''}>
-            <span class="color-pill" style="background: ${item.color};"></span>
-            <span class="qgis-layer-name">✂️ ${item.name} (${item.count})</span>
-          </label>
-          <div class="qgis-layer-actions">
-            <button class="btn-tiny" title="Centrar" onclick="zoomToLayer('${item.id}')">🔍</button>
-            <button class="btn-tiny" title="Descargar GeoJSON" onclick="downloadIsolated('${item.id}')">💾</button>
-            <button class="btn-tiny delete" title="Eliminar" onclick="deleteIsolated('${item.id}')">✕</button>
+          <span style="font-weight: 700; font-size: 0.85rem; color: #34d399;">✂️ ${item.name}</span>
+          <div style="display: flex; gap: 6px;">
+            <button onclick="zoomToLayer('${k}')" style="background: #1e293b; border: 1px solid #38bdf8; color: #38bdf8; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; cursor: pointer;">Zoom</button>
+            <button onclick="downloadIsolated('${k}')" style="background: #1e293b; border: 1px solid #10b981; color: #10b981; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; cursor: pointer;">GeoJSON</button>
           </div>
         `;
         listIsolatedLayers.appendChild(row);
-
-        document.getElementById(`chk-${item.id}`).addEventListener('change', function() {
-          if (this.checked) item.layer.addTo(map);
-          else map.removeLayer(item.layer);
-        });
       });
     }
 
     window.zoomToLayer = function(id) {
       const item = isolatedLayers[id];
       if (item) {
-        focusAndCenterLayer(item.layer, false);
+        focusAndCenterLayer(item.layer);
         qgisModal.classList.remove('show');
       }
     };
@@ -1674,112 +1454,42 @@
       a.remove();
     };
 
-    window.deleteIsolated = function(id) {
-      const item = isolatedLayers[id];
-      if (item) {
-        map.removeLayer(item.layer);
-        delete isolatedLayers[id];
-        updateQgisLayersList();
-        if (Object.keys(isolatedLayers).length === 0) {
-          restoreAllBaseLayers();
-        }
-      }
-    };
-
-    // Checkboxes del modal QGIS
-    document.getElementById('qgis-chk-provincias').addEventListener('change', function() {
-      if (this.checked && baseLayers.provincias) { baseLayers.provincias.addTo(map); document.getElementById('pill-provincias').classList.add('active'); }
-      else if (baseLayers.provincias) { map.removeLayer(baseLayers.provincias); document.getElementById('pill-provincias').classList.remove('active'); }
-    });
-
-    document.getElementById('qgis-chk-cantones').addEventListener('change', async function() {
-      if (this.checked) {
-        if (!baseLayers.cantones) {
-          const d = await loadDataFile('CANTONES_DATA', 'data_js/cantones.js', 'geojson_web_ligero/cantones_web.geojson');
-          baseLayers.cantones = createInteractiveLayer(d, 'cantones');
-        }
-        baseLayers.cantones.addTo(map);
-        document.getElementById('pill-cantones').classList.add('active');
-      } else {
-        if (baseLayers.cantones) map.removeLayer(baseLayers.cantones);
-        document.getElementById('pill-cantones').classList.remove('active');
-      }
-    });
-
-    document.getElementById('qgis-chk-parroquias').addEventListener('change', async function() {
-      if (this.checked) {
-        if (!baseLayers.parroquias) {
-          const d = await loadDataFile('PARROQUIAS_DATA', 'data_js/parroquias.js', 'geojson_web_ligero/parroquias_web.geojson');
-          baseLayers.parroquias = createInteractiveLayer(d, 'parroquias');
-        }
-        baseLayers.parroquias.addTo(map);
-        document.getElementById('pill-parroquias').classList.add('active');
-      } else {
-        if (baseLayers.parroquias) map.removeLayer(baseLayers.parroquias);
-        document.getElementById('pill-parroquias').classList.remove('active');
-      }
-    });
-
-    document.getElementById('qgis-chk-periferia').addEventListener('change', function() {
-      if (this.checked && baseLayers.periferia) baseLayers.periferia.addTo(map);
-      else if (baseLayers.periferia) map.removeLayer(baseLayers.periferia);
-    });
-
-    // ========================================================
-    // BÚSQUEDA Y SELECCIÓN DE ENTIDADES
-    // ========================================================
+    // Buscador
     const searchModal = document.getElementById('search-modal');
     const inputSearchText = document.getElementById('input-search-text');
     const searchResultsList = document.getElementById('search-results-list');
 
-    function openSearchModal() {
-      renderSearchList('');
+    document.getElementById('pill-search-entity').addEventListener('click', () => {
       searchModal.classList.add('show');
-      setTimeout(() => inputSearchText.focus(), 200);
-    }
-
-    document.getElementById('pill-search-entity').addEventListener('click', openSearchModal);
-    document.getElementById('btn-quick-select').addEventListener('click', openSearchModal);
+      inputSearchText.value = '';
+      renderSearchResults('');
+      setTimeout(() => inputSearchText.focus(), 150);
+    });
     document.getElementById('btn-close-search').addEventListener('click', () => searchModal.classList.remove('show'));
 
-    inputSearchText.addEventListener('input', function() { renderSearchList(this.value.trim()); });
-
-    async function renderSearchList(query) {
-      searchResultsList.innerHTML = '<div style="color:#94a3b8; font-size:0.8rem; text-align:center; padding:10px;">Cargando catálogo...</div>';
-
-      const results = [];
-      const q = query.toLowerCase();
-
+    let allEntitiesIndex = null;
+    function buildEntityIndex() {
+      if (allEntitiesIndex) return allEntitiesIndex;
+      allEntitiesIndex = [];
       if (window.PROVINCIAS_DATA) {
         window.PROVINCIAS_DATA.features.forEach(f => {
-          const name = getName(f.properties);
-          if (!q || name.toLowerCase().includes(q)) {
-            results.push({ name, type: 'Provincia', code: f.properties.DPA_PROVIN, layerKey: 'provincias' });
-          }
+          allEntitiesIndex.push({ name: getName(f.properties), type: 'Provincia', code: f.properties.DPA_PROVIN, layerKey: 'provincias' });
         });
       }
+      return allEntitiesIndex;
+    }
 
-      const cantonesData = await loadDataFile('CANTONES_DATA', 'data_js/cantones.js', 'geojson_web_ligero/cantones_web.geojson');
-      if (cantonesData) {
-        cantonesData.features.forEach(f => {
-          const name = getName(f.properties);
-          const provName = f.properties.DPA_DESPRO || '';
-          if (q && (name.toLowerCase().includes(q) || provName.toLowerCase().includes(q))) {
-            results.push({ name, type: `Cantón (${provName})`, code: f.properties.DPA_CANTON, layerKey: 'cantones' });
-          }
-        });
-      }
+    inputSearchText.addEventListener('input', e => renderSearchResults(e.target.value.trim().toLowerCase()));
 
-      if (results.length === 0) {
-        searchResultsList.innerHTML = '<div style="color:#94a3b8; font-size:0.85rem; text-align:center; padding:16px;">No se encontraron entidades coincidentes.</div>';
-        return;
-      }
-
+    function renderSearchResults(filter) {
+      const index = buildEntityIndex();
       searchResultsList.innerHTML = '';
-      results.slice(0, 30).forEach(item => {
-        const btn = document.createElement('button');
-        btn.className = 'search-item-btn';
-        btn.innerHTML = `<span>📍 ${item.name}</span><span class="search-item-tag">${item.type}</span>`;
+      const filtered = index.filter(item => item.name.toLowerCase().includes(filter)).slice(0, 30);
+
+      filtered.forEach(item => {
+        const btn = document.createElement('div');
+        btn.className = 'btn-search-item';
+        btn.innerHTML = `<span>${item.name}</span><span style="color: #38bdf8; font-size: 0.75rem;">${item.type}</span>`;
         btn.addEventListener('click', async () => {
           searchModal.classList.remove('show');
           await triggerEntitySelection(item.layerKey, item.code);
@@ -1814,9 +1524,9 @@
       }
     }
 
-    // ========================================================
-    // MODAL DE EXPORTACIÓN Y DESCARGA CENTRADA (IMAGEN / PDF)
-    // ========================================================
+    // =========================================================================
+    // EXPORTACIÓN ESTABLE (CERO DESCENTRADO / CERO MOVIMIENTO HACIA ARRIBA)
+    // =========================================================================
     const exportModal = document.getElementById('export-modal');
     const exportFocusText = document.getElementById('export-focus-text');
 
@@ -1833,7 +1543,329 @@
       exportModal.classList.add('show');
     });
 
-    document.getElementById('btn-edit-student').addEventListener('click', () => {
+    document.getElementById('btn-close-export').addEventListener('click', () => {
+      saveStudentName(inputStudentName.value);
+      exportModal.classList.remove('show');
+    });
+
+    async function executeStableExport(format) {
+      saveStudentName(inputStudentName.value);
+      exportModal.classList.remove('show');
+      showToast(`📸 Generando lámina oficial ${format.toUpperCase()} (ITEC 2026)...`);
+
+      const topBar = document.querySelector('.top-bar');
+      const floatingTools = document.querySelector('.floating-tools');
+      const bottomSheet = document.getElementById('bottom-sheet');
+      const measureHudEl = document.getElementById('measure-hud');
+      const toastMsg = document.getElementById('toast-msg');
+
+      if (topBar) topBar.style.display = 'none';
+      if (floatingTools) floatingTools.style.display = 'none';
+      if (bottomSheet) bottomSheet.style.display = 'none';
+      if (measureHudEl) measureHudEl.style.display = 'none';
+      if (toastMsg) toastMsg.style.display = 'none';
+
+      // Actualizar leyenda
+      const legendStudyLabel = document.getElementById('legend-study-label');
+      if (legendStudyLabel) {
+        if (hasIsolatedLayer) {
+          const firstKey = Object.keys(isolatedLayers)[0];
+          legendStudyLabel.innerText = isolatedLayers[firstKey].name;
+        } else if (selectedEntity) {
+          legendStudyLabel.innerText = `${selectedEntity.type}: ${selectedEntity.name}`;
+        } else {
+          legendStudyLabel.innerText = 'Ecuador Nacional';
+        }
+      }
+
+      try {
+        // CERO MOVIMIENTO: Preservamos la cámara exactamente donde está
+        await new Promise(r => setTimeout(r, 200));
+
+        const wrapper = document.getElementById('map-export-wrapper');
+        const canvas = await html2canvas(wrapper, {
+          useCORS: true,
+          allowTaint: true,
+          scale: 2,
+          logging: false
+        });
+
+        const safeName = studentName.toLowerCase().replace(/[^a-z0-9]/g, '_') || 'estudiante_itec';
+
+        if (format === 'jpg' || format === 'jpeg') {
+          const imageUri = canvas.toDataURL('image/jpeg', 0.95);
+          const a = document.createElement('a');
+          a.setAttribute('download', `mapa_centrado_itec_${safeName}_2026.jpg`);
+          a.setAttribute('href', imageUri);
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          showToast('✅ ¡Imagen JPG descargada con éxito!');
+        } else if (format === 'png') {
+          const imageUri = canvas.toDataURL('image/png');
+          const a = document.createElement('a');
+          a.setAttribute('download', `mapa_centrado_itec_${safeName}_2026.png`);
+          a.setAttribute('href', imageUri);
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          showToast('✅ ¡Imagen PNG descargada con éxito!');
+        } else if (format === 'pdf') {
+          const imgData = canvas.toDataURL('image/jpeg', 0.95);
+          const { jsPDF } = window.jspdf;
+          const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+
+          pdf.setFillColor(15, 23, 42);
+          pdf.rect(0, 0, pageWidth, 20, 'F');
+
+          pdf.setFont('helvetica', 'bold');
+          pdf.setFontSize(13);
+          pdf.setTextColor(56, 189, 248);
+          pdf.text("INSTITUTO TECNOLÓGICO ITEC 2026", 14, 8);
+
+          pdf.setFontSize(10);
+          pdf.setTextColor(52, 211, 153);
+          pdf.text("CARRERA DE GESTIÓN DE RIESGOS - PRODUCTO CARTOGRÁFICO", 14, 14);
+
+          pdf.setFont('helvetica', 'normal');
+          pdf.setFontSize(9);
+          pdf.setTextColor(248, 250, 252);
+          pdf.text(`Estudiante: ${studentName}`, pageWidth - 80, 11);
+
+          const mapMargin = 8;
+          const mapY = 22;
+          const mapW = pageWidth - (mapMargin * 2);
+          const mapH = pageHeight - mapY - 8;
+
+          pdf.addImage(imgData, 'JPEG', mapMargin, mapY, mapW, mapH, '', 'FAST');
+          pdf.save(`informe_cartografico_itec_${safeName}_2026.pdf`);
+          showToast('✅ ¡Informe PDF generado con éxito!');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Error al exportar: ' + err.message);
+      } finally {
+        if (topBar) topBar.style.display = '';
+        if (floatingTools) floatingTools.style.display = '';
+        if (bottomSheet) bottomSheet.style.display = '';
+        if (isMeasuring && measureHudEl) measureHudEl.style.display = 'flex';
+        if (toastMsg) toastMsg.style.display = '';
+      }
+    }
+
+    document.getElementById('btn-download-jpg').addEventListener('click', () => executeStableExport('jpg'));
+    document.getElementById('btn-download-image').addEventListener('click', () => executeStableExport('png'));
+    document.getElementById('btn-download-pdf').addEventListener('click', () => executeStableExport('pdf'));
+
+    // =========================================================================
+    // HERRAMIENTA DE MEDICIÓN INTERACTIVA (DISTANCIA Y ÁREA)
+    // =========================================================================
+    let isMeasuring = false;
+    let measurePoints = [];
+    let measureMarkers = [];
+    let measureLine = null;
+    let measurePolygon = null;
+
+    const measureHud = document.getElementById('measure-hud');
+    const measureDistVal = document.getElementById('measure-dist-val');
+    const measureAreaVal = document.getElementById('measure-area-val');
+    const btnToggleMeasure = document.getElementById('btn-toggle-measure');
+    const btnMeasureClear = document.getElementById('btn-measure-clear');
+    const btnMeasureDone = document.getElementById('btn-measure-done');
+
+    function toggleMeasureMode() {
+      isMeasuring = !isMeasuring;
+      btnToggleMeasure.classList.toggle('active', isMeasuring);
+      if (isMeasuring) {
+        measureHud.classList.add('active');
+        map.getContainer().style.cursor = 'crosshair';
+        showToast('📏 Modo Medición: Toca el mapa para agregar puntos');
+      } else {
+        stopMeasurement();
+      }
+    }
+
+    function stopMeasurement() {
+      isMeasuring = false;
+      btnToggleMeasure.classList.remove('active');
+      measureHud.classList.remove('active');
+      map.getContainer().style.cursor = '';
+    }
+
+    function clearMeasurement() {
+      measurePoints = [];
+      measureMarkers.forEach(m => map.removeLayer(m));
+      measureMarkers = [];
+      if (measureLine) { map.removeLayer(measureLine); measureLine = null; }
+      if (measurePolygon) { map.removeLayer(measurePolygon); measurePolygon = null; }
+      measureDistVal.innerText = 'Toca el mapa para medir';
+      measureAreaVal.innerText = 'Área: 3+ puntos necesarios';
+    }
+
+    function computePolygonArea(latlngs) {
+      if (latlngs.length < 3) return 0;
+      const R = 6378137;
+      let area = 0;
+      for (let i = 0; i < latlngs.length; i++) {
+        const p1 = latlngs[i];
+        const p2 = latlngs[(i + 1) % latlngs.length];
+        area += ((p2.lng - p1.lng) * Math.PI / 180) * (2 + Math.sin(p1.lat * Math.PI / 180) + Math.sin(p2.lat * Math.PI / 180));
+      }
+      area = Math.abs(area * R * R / 2);
+      return area;
+    }
+
+    map.on('click', function(e) {
+      if (!isMeasuring) return;
+      const pt = e.latlng;
+      measurePoints.push(pt);
+
+      const marker = L.circleMarker(pt, {
+        radius: 5,
+        color: '#10b981',
+        fillColor: '#ffffff',
+        fillOpacity: 1,
+        weight: 2
+      }).addTo(map);
+      measureMarkers.push(marker);
+
+      if (measurePoints.length > 1) {
+        if (!measureLine) {
+          measureLine = L.polyline(measurePoints, { color: '#10b981', weight: 3, dashArray: '6, 6' }).addTo(map);
+        } else {
+          measureLine.setLatLngs(measurePoints);
+        }
+
+        let totalDist = 0;
+        for (let i = 1; i < measurePoints.length; i++) {
+          totalDist += measurePoints[i-1].distanceTo(measurePoints[i]);
+        }
+        const distKm = (totalDist / 1000).toFixed(2);
+        measureDistVal.innerText = `Distancia: ${distKm} km (${Math.round(totalDist)} m)`;
+
+        if (measurePoints.length >= 3) {
+          if (!measurePolygon) {
+            measurePolygon = L.polygon(measurePoints, { color: '#38bdf8', weight: 1.5, fillColor: '#38bdf8', fillOpacity: 0.25 }).addTo(map);
+          } else {
+            measurePolygon.setLatLngs(measurePoints);
+          }
+          const areaM2 = computePolygonArea(measurePoints);
+          const areaKm2 = (areaM2 / 1000000).toFixed(2);
+          const areaHa = (areaM2 / 10000).toFixed(1);
+          measureAreaVal.innerText = `Área: ${areaKm2} km² (${areaHa} ha)`;
+        }
+      } else {
+        measureDistVal.innerText = 'Punto 1 fijado. Toca otro punto...';
+      }
+    });
+
+    btnToggleMeasure.addEventListener('click', toggleMeasureMode);
+    btnMeasureClear.addEventListener('click', clearMeasurement);
+    btnMeasureDone.addEventListener('click', stopMeasurement);
+
+    // =========================================================================
+    // LOCALIZACIÓN GPS EN TIEMPO REAL
+    // =========================================================================
+    let gpsMarker = null;
+    let gpsCircle = null;
+    const btnGps = document.getElementById('btn-gps-locate');
+
+    btnGps.addEventListener('click', function() {
+      if (!navigator.geolocation) {
+        alert('Geolocalización no soportada en este dispositivo.');
+        return;
+      }
+      showToast('🛰️ Obteniendo posición GPS...');
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          const accuracy = Math.round(pos.coords.accuracy);
+
+          if (gpsMarker) map.removeLayer(gpsMarker);
+          if (gpsCircle) map.removeLayer(gpsCircle);
+
+          const pulseIcon = L.divIcon({
+            className: 'gps-marker-pulse',
+            iconSize: [18, 18],
+            iconAnchor: [9, 9]
+          });
+
+          gpsMarker = L.marker([lat, lng], { icon: pulseIcon }).addTo(map)
+            .bindPopup(`<b>📍 Tu Ubicación Actual</b><br>Lat: ${lat.toFixed(5)}<br>Lng: ${lng.toFixed(5)}<br>Precisión: ±${accuracy}m`)
+            .openPopup();
+
+          gpsCircle = L.circle([lat, lng], { radius: accuracy, color: '#38bdf8', fillColor: '#38bdf8', fillOpacity: 0.15, weight: 1.5 }).addTo(map);
+
+          map.setView([lat, lng], 13);
+          showToast(`📍 GPS localizado: Precisión ±${accuracy} metros`);
+        },
+        err => {
+          console.warn(err);
+          alert('No se pudo obtener la señal GPS: ' + err.message + '\nAsegúrate de conceder permisos de ubicación.');
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    });
+
+    // =========================================================================
+    // CAJA DE HERRAMIENTAS (TOOLBOX MODAL)
+    // =========================================================================
+    const toolboxModal = document.getElementById('toolbox-modal');
+    document.getElementById('btn-open-toolbox').addEventListener('click', () => toolboxModal.classList.add('show'));
+    document.getElementById('btn-close-toolbox').addEventListener('click', () => toolboxModal.classList.remove('show'));
+
+    // Botón Mapa Base desde Toolbox
+    const basemapModal = document.getElementById('basemap-modal');
+    document.getElementById('card-open-basemap').addEventListener('click', () => {
+      toolboxModal.classList.remove('show');
+      basemapModal.classList.add('show');
+    });
+    document.getElementById('btn-close-basemap').addEventListener('click', () => basemapModal.classList.remove('show'));
+
+    function setBaseMap(type) {
+      [osmLayer, satLayer, topoLayer].forEach(l => { if (map.hasLayer(l)) map.removeLayer(l); });
+      document.querySelectorAll('.btn-basemap-opt').forEach(b => b.classList.remove('active'));
+      if (type === 'osm') {
+        osmLayer.addTo(map);
+        document.getElementById('opt-base-osm').classList.add('active');
+      } else if (type === 'sat') {
+        satLayer.addTo(map);
+        document.getElementById('opt-base-sat').classList.add('active');
+      } else if (type === 'topo') {
+        topoLayer.addTo(map);
+        document.getElementById('opt-base-topo').classList.add('active');
+      }
+      currentBase = type;
+      basemapModal.classList.remove('show');
+      showToast(`🗺️ Mapa base: ${type === 'osm' ? 'Callejero Político' : type === 'sat' ? 'Satelital Esri' : 'Relieve Topográfico'}`);
+    }
+    document.getElementById('opt-base-osm').addEventListener('click', () => setBaseMap('osm'));
+    document.getElementById('opt-base-sat').addEventListener('click', () => setBaseMap('sat'));
+    document.getElementById('opt-base-topo').addEventListener('click', () => setBaseMap('topo'));
+
+    // Alternar Nombres
+    const labelNamesStatus = document.getElementById('label-names-status');
+    document.getElementById('card-toggle-names').addEventListener('click', function() {
+      showNames = !showNames;
+      labelNamesStatus.innerText = showNames ? 'Nombres: Sí' : 'Nombres: No';
+      this.classList.toggle('active', showNames);
+      Object.values(baseLayers).forEach(group => {
+        if (group && map.hasLayer(group)) group.eachLayer(l => showNames ? l.openTooltip() : l.closeTooltip());
+      });
+      Object.values(isolatedLayers).forEach(item => {
+        if (item.layer && map.hasLayer(item.layer)) item.layer.eachLayer(l => showNames ? l.openTooltip() : l.closeTooltip());
+      });
+      showToast(showNames ? '🏷️ Nombres visibles' : 'Nombres ocultos');
+      toolboxModal.classList.remove('show');
+    });
+
+    // Editar Alumno
+    document.getElementById('card-edit-student').addEventListener('click', () => {
+      toolboxModal.classList.remove('show');
       const nuevo = prompt("Ingresa tu Nombre y Apellido (Estudiante ITEC):", studentName);
       if (nuevo) {
         saveStudentName(nuevo);
@@ -1841,129 +1873,29 @@
       }
     });
 
-    document.getElementById('btn-close-export').addEventListener('click', () => {
-      saveStudentName(inputStudentName.value);
-      exportModal.classList.remove('show');
+    // Capas QGIS desde Toolbox
+    document.getElementById('card-open-qgis-layers').addEventListener('click', () => {
+      toolboxModal.classList.remove('show');
+      openQgisModal();
     });
 
-    // Función crucial: CENTRAR CON PADDING ASIMÉTRICO ANTES DE EXPORTAR
-    async function prepareMapCenteringForExport() {
-      const isoKeys = Object.keys(isolatedLayers);
-      if (isoKeys.length > 0) {
-        focusAndCenterLayer(isolatedLayers[isoKeys[0]].layer, true);
-      } else if (selectedEntity && selectedEntity.layer) {
-        focusAndCenterLayer(selectedEntity.layer, true);
+    // Centrar Ecuador desde Toolbox
+    document.getElementById('card-center-ecuador').addEventListener('click', () => {
+      toolboxModal.classList.remove('show');
+      map.setView([-1.45, -78.50], 7);
+      displayMapFocus.innerText = 'Zona: Todo el Ecuador';
+      showToast('🇪🇨 Centrado en Ecuador');
+    });
+
+    // Pantalla Completa desde Toolbox
+    document.getElementById('card-fullscreen-toggle').addEventListener('click', function() {
+      toolboxModal.classList.remove('show');
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(e => console.log(e));
+        showToast('⛶ Pantalla completa activada');
       } else {
-        map.setView([-1.45, -78.50], 7.2, { animate: false });
-      }
-      await new Promise(r => setTimeout(r, 450));
-    }
-
-    // 📸 EXPORTAR IMAGEN CENTRADA (PNG) - OCULTANDO BOTONES INTERACTIVOS
-    document.getElementById('btn-download-image').addEventListener('click', async function() {
-      saveStudentName(inputStudentName.value);
-      exportModal.classList.remove('show');
-      showToast('📸 Centrando entidad y generando imagen oficial ITEC...');
-
-      // Ocultar botones de pantalla para que NO salgan en la foto
-      const topBar = document.querySelector('.top-bar');
-      const floatingTools = document.querySelector('.floating-tools');
-      const bottomSheet = document.getElementById('bottom-sheet');
-      if (topBar) topBar.style.display = 'none';
-      if (floatingTools) floatingTools.style.display = 'none';
-      if (bottomSheet) bottomSheet.style.display = 'none';
-
-      try {
-        await prepareMapCenteringForExport();
-
-        const wrapper = document.getElementById('map-export-wrapper');
-        const canvas = await html2canvas(wrapper, { useCORS: true, allowTaint: true, scale: 2, logging: false });
-
-        const imageUri = canvas.toDataURL('image/png');
-        const a = document.createElement('a');
-        const safeName = studentName.toLowerCase().replace(/[^a-z0-9]/g, '_');
-        a.setAttribute('download', `mapa_centrado_itec_${safeName}_2026.png`);
-        a.setAttribute('href', imageUri);
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-
-        showToast('✅ ¡Imagen centrada descargada con éxito!');
-      } catch (err) {
-        console.error(err);
-        alert('Error al generar imagen: ' + err.message);
-      } finally {
-        // Restaurar botones de pantalla
-        if (topBar) topBar.style.display = '';
-        if (floatingTools) floatingTools.style.display = '';
-        if (bottomSheet) bottomSheet.style.display = '';
-      }
-    });
-
-    // 📄 EXPORTAR PDF CENTRADO (A4) - OCULTANDO BOTONES INTERACTIVOS
-    document.getElementById('btn-download-pdf').addEventListener('click', async function() {
-      saveStudentName(inputStudentName.value);
-      exportModal.classList.remove('show');
-      showToast('📄 Centrando y creando informe PDF ITEC 2026...');
-
-      const topBar = document.querySelector('.top-bar');
-      const floatingTools = document.querySelector('.floating-tools');
-      const bottomSheet = document.getElementById('bottom-sheet');
-      if (topBar) topBar.style.display = 'none';
-      if (floatingTools) floatingTools.style.display = 'none';
-      if (bottomSheet) bottomSheet.style.display = 'none';
-
-      try {
-        await prepareMapCenteringForExport();
-
-        const wrapper = document.getElementById('map-export-wrapper');
-        const canvas = await html2canvas(wrapper, { useCORS: true, allowTaint: true, scale: 2, logging: false });
-
-        const imgData = canvas.toDataURL('image/jpeg', 0.95);
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-
-        pdf.setFillColor(15, 23, 42);
-        pdf.rect(0, 0, pageWidth, 20, 'F');
-
-        pdf.setFont('helvetica', 'bold');
-        pdf.setFontSize(13);
-        pdf.setTextColor(56, 189, 248);
-        pdf.text("INSTITUTO TECNOLÓGICO ITEC 2026", 14, 8);
-
-        pdf.setFontSize(10);
-        pdf.setTextColor(52, 211, 153);
-        pdf.text("CARRERA DE GESTIÓN DE RIESGOS - PRÁCTICA CARTOGRÁFICA", 14, 14);
-
-        pdf.setFont('helvetica', 'normal');
-        pdf.setFontSize(9);
-        pdf.setTextColor(248, 250, 252);
-        pdf.text(`Estudiante: ${studentName}`, pageWidth - 80, 11);
-
-        const imgWidth = pageWidth - 20;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        const finalHeight = Math.min(imgHeight, pageHeight - 34);
-
-        pdf.addImage(imgData, 'JPEG', 10, 24, imgWidth, finalHeight);
-
-        pdf.setFontSize(8);
-        pdf.setTextColor(148, 163, 184);
-        pdf.text("Fuente: DPA Ecuador (INEC) · Geoportal Educativo Móvil QGIS ITEC 2026", 14, pageHeight - 4);
-
-        const safeName = studentName.toLowerCase().replace(/[^a-z0-9]/g, '_');
-        pdf.save(`informe_centrado_itec_${safeName}_2026.pdf`);
-
-        showToast('🎓 ¡Informe PDF descargado!');
-      } catch (err) {
-        console.error(err);
-        alert('Error al generar PDF: ' + err.message);
-      } finally {
-        if (topBar) topBar.style.display = '';
-        if (floatingTools) floatingTools.style.display = '';
-        if (bottomSheet) bottomSheet.style.display = '';
+        if (document.exitFullscreen) document.exitFullscreen();
+        showToast('Ventana normal');
       }
     });
 
@@ -2009,58 +1941,48 @@
       }
     });
 
-    // Botones Flotantes
-    const btnToggleNames = document.getElementById('btn-toggle-names');
-    btnToggleNames.addEventListener('click', function() {
-      showNames = !showNames;
-      this.classList.toggle('active');
-      Object.values(baseLayers).forEach(group => {
-        if (group && map.hasLayer(group)) group.eachLayer(l => showNames ? l.openTooltip() : l.closeTooltip());
-      });
-      Object.values(isolatedLayers).forEach(item => {
-        if (item.layer && map.hasLayer(item.layer)) item.layer.eachLayer(l => showNames ? l.openTooltip() : l.closeTooltip());
-      });
-      showToast(showNames ? '🏷️ Nombres visibles' : 'Nombres ocultos');
+    // Checkboxes QGIS Modal
+    document.getElementById('qgis-chk-provincias').addEventListener('change', function() {
+      const pill = document.getElementById('pill-provincias');
+      if (this.checked) { baseLayers.provincias.addTo(map); pill.classList.add('active'); }
+      else { map.removeLayer(baseLayers.provincias); pill.classList.remove('active'); }
     });
-
-    const btnToggleBasemap = document.getElementById('btn-toggle-basemap');
-    btnToggleBasemap.addEventListener('click', function() {
-      isSatellite = !isSatellite;
-      if (isSatellite) {
-        map.removeLayer(osmLayer);
-        satLayer.addTo(map);
-        this.innerText = '🗺️';
-        showToast('🛰️ Mapa Satélite activo');
+    document.getElementById('qgis-chk-cantones').addEventListener('change', async function() {
+      const pill = document.getElementById('pill-cantones');
+      if (this.checked) {
+        if (!baseLayers.cantones) {
+          const d = await loadDataFile('CANTONES_DATA', 'data_js/cantones.js', 'geojson_web_ligero/cantones_web.geojson');
+          baseLayers.cantones = createInteractiveLayer(d, 'cantones');
+        }
+        baseLayers.cantones.addTo(map);
+        pill.classList.add('active');
       } else {
-        map.removeLayer(satLayer);
-        osmLayer.addTo(map);
-        this.innerText = '🛰️';
-        showToast('🗺️ Mapa Calles activo');
+        if (baseLayers.cantones) map.removeLayer(baseLayers.cantones);
+        pill.classList.remove('active');
       }
     });
-
-    document.getElementById('btn-center-ecuador').addEventListener('click', function() {
-      map.setView([-1.45, -78.50], 7);
-      displayMapFocus.innerText = 'Zona: Todo el Ecuador';
-      showToast('🎯 Centrado en Ecuador');
+    document.getElementById('qgis-chk-parroquias').addEventListener('change', async function() {
+      const pill = document.getElementById('pill-parroquias');
+      if (this.checked) {
+        if (!baseLayers.parroquias) {
+          const d = await loadDataFile('PARROQUIAS_DATA', 'data_js/parroquias.js', 'geojson_web_ligero/parroquias_web.geojson');
+          baseLayers.parroquias = createInteractiveLayer(d, 'parroquias');
+        }
+        baseLayers.parroquias.addTo(map);
+        pill.classList.add('active');
+      } else {
+        if (baseLayers.parroquias) map.removeLayer(baseLayers.parroquias);
+        pill.classList.remove('active');
+      }
+    });
+    document.getElementById('qgis-chk-periferia').addEventListener('change', function() {
+      if (this.checked) { baseLayers.periferia.addTo(map); }
+      else { map.removeLayer(baseLayers.periferia); }
     });
 
     // Iniciar capas por defecto
     if (window.PERIFERIA_DATA) baseLayers.periferia = createInteractiveLayer(window.PERIFERIA_DATA, 'periferia').addTo(map);
     if (window.PROVINCIAS_DATA) baseLayers.provincias = createInteractiveLayer(window.PROVINCIAS_DATA, 'provincias').addTo(map);
-  
-    // Hook de prueba automática
-    const urlParams = new URLSearchParams(window.location.search);
-    const testEntity = urlParams.get('test_isolate');
-    if (testEntity) {
-      setTimeout(async () => {
-        await triggerEntitySelection('provincias', testEntity);
-        setTimeout(() => {
-          const btnIso = document.getElementById('btn-isolate-and-hide-others');
-          if (btnIso) btnIso.click();
-        }, 400);
-      }, 600);
-    }
   </script>
 </body>
 </html>
