@@ -301,57 +301,121 @@
     .top-bar {
       position: absolute;
       top: 98px;
-      left: 12px;
-      right: 12px;
+      left: 10px;
+      right: 10px;
       z-index: 1000;
       display: flex;
-      gap: 8px;
+      flex-direction: column;
+      gap: 6px;
       pointer-events: none;
     }
-    .pills-scroll {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 4px;
+    .top-dock-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
       pointer-events: auto;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
       width: 100%;
     }
-    .pills-scroll::-webkit-scrollbar { display: none; }
-
-    .pill-btn {
-      background: rgba(15, 23, 42, 0.92);
-      backdrop-filter: blur(8px);
+    .dock-icon-btn {
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(10px);
       border: 1.5px solid #334155;
       color: #cbd5e1;
-      padding: 7px 13px;
-      border-radius: 20px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      white-space: nowrap;
+      padding: 6px 2px 4px 2px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
       cursor: pointer;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+      transition: all 0.2s ease;
+      touch-action: manipulation;
+      min-width: 0;
+    }
+    .dock-icon-btn:active { transform: scale(0.93); }
+    .dock-icon-btn .btn-icon {
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+    .dock-icon-btn .btn-label {
+      font-size: 0.60rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      line-height: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #94a3b8;
+    }
+    .dock-icon-btn.active {
+      background: #1e293b;
+      border-color: #38bdf8;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
+    }
+    .dock-icon-btn.active .btn-label {
+      color: #38bdf8;
+    }
+    .dock-icon-btn.btn-search {
+      border-color: #f59e0b;
+      background: rgba(245, 158, 11, 0.12);
+    }
+    .dock-icon-btn.btn-search .btn-label {
+      color: #fbbf24;
+    }
+    .dock-icon-btn.btn-qgis {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.12);
+    }
+    .dock-icon-btn.btn-qgis .btn-label {
+      color: #34d399;
+    }
+
+    /* BARRA CONTEXTUAL FLOTANTE (DESELECCIONAR / ELIMINAR CAPA) */
+    .context-bar-row {
+      display: flex;
+      gap: 6px;
+      pointer-events: auto;
+      justify-content: center;
+    }
+    .context-pill-btn {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.76rem;
+      font-weight: 800;
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.2s ease;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      cursor: pointer;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
+      border: 1.5px solid #334155;
+      color: #f8fafc;
+      animation: fadeInContext 0.25s ease;
+      touch-action: manipulation;
     }
-    .pill-btn:active { transform: scale(0.96); }
-    .pill-btn.active {
-      background: #1e293b;
-      border-color: #38bdf8;
-      color: #38bdf8;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+    .context-pill-btn:active { transform: scale(0.95); }
+    @keyframes fadeInContext {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    .pill-btn.pill-search {
+    .context-pill-btn.deselect {
       border-color: #f59e0b;
       color: #fbbf24;
-      background: rgba(245, 158, 11, 0.15);
+      background: rgba(245, 158, 11, 0.18);
     }
-    .pill-btn.pill-qgis {
-      border-color: #10b981;
-      color: #34d399;
+    .context-pill-btn.delete {
+      border-color: #ef4444;
+      color: #f87171;
+      background: rgba(239, 68, 68, 0.18);
+    }
+    .context-pill-btn.restore {
+      border-color: #38bdf8;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.18);
     }
 
     /* BOTONES FLOTANTES COMPACTOS Y RESPONSIVOS */
@@ -827,10 +891,14 @@
         max-width: none;
         padding: 7px 10px;
       }
-      .top-bar { top: 84px; left: 8px; right: 8px; }
+      .top-bar { top: 82px; left: 6px; right: 6px; }
+      .top-dock-grid { gap: 4px; }
+      .dock-icon-btn { padding: 5px 1px 3px 1px; border-radius: 10px; }
+      .dock-icon-btn .btn-icon { font-size: 1.20rem; }
+      .dock-icon-btn .btn-label { font-size: 0.58rem; }
       .carto-north-arrow { top: 8px; right: 8px; transform: scale(0.80); transform-origin: top right; }
       .carto-legend { bottom: 18px; right: 8px; padding: 5px 8px; font-size: 0.62rem; }
-      .floating-tools { top: 135px; right: 8px; gap: 8px; }
+      .floating-tools { top: 148px; right: 8px; gap: 8px; }
       .fab-btn { width: 44px; height: 44px; font-size: 1.15rem; }
       .measure-hud { top: 125px; font-size: 0.75rem; padding: 7px 12px; }
     }
@@ -913,35 +981,50 @@
       <span>🔔</span> <span id="toast-text">¡Mensaje!</span>
     </div>
 
-    <!-- BARRA SUPERIOR DE PÍLDORAS -->
+    <!-- BARRA SUPERIOR DE ICONOS COMPACTOS (100% EN PANTALLA - SIN DESPLAZARSE) -->
     <div class="top-bar">
-      <div class="pills-scroll">
-        <button id="pill-search-entity" class="pill-btn pill-search">
-          🔍 Buscar Entidad
+      <div class="top-dock-grid">
+        <button id="pill-search-entity" class="dock-icon-btn btn-search" title="Buscar Provincia o Cantón">
+          <span class="btn-icon">🔍</span>
+          <span class="btn-label">Buscar</span>
         </button>
-        <button id="pill-restore-all" class="pill-btn" style="display: none; border-color: #ef4444; color: #f87171;">
-          👁️ Restaurar Capas
+
+        <button id="pill-open-qgis-layers" class="dock-icon-btn btn-qgis" title="Panel de Capas estilo QGIS">
+          <span class="btn-icon">📑</span>
+          <span class="btn-label">Capas</span>
         </button>
-        <button id="pill-delete-isolated" class="pill-btn" style="display: none; border-color: #ef4444; color: #f87171;" title="Eliminar capa recortada y volver al mapa normal">
+
+        <button id="pill-provincias" class="dock-icon-btn active" title="Prender / Apagar Provincias">
+          <span class="btn-icon">🏛️</span>
+          <span class="btn-label">Prov</span>
+        </button>
+
+        <button id="pill-cantones" class="dock-icon-btn" title="Prender / Apagar Cantones">
+          <span class="btn-icon">🏘️</span>
+          <span class="btn-label">Cant</span>
+        </button>
+
+        <button id="pill-parroquias" class="dock-icon-btn" title="Prender / Apagar Parroquias">
+          <span class="btn-icon">🏡</span>
+          <span class="btn-label">Parr</span>
+        </button>
+
+        <button id="pill-toggle-names" class="dock-icon-btn" title="Mostrar u Ocultar Nombres">
+          <span id="pill-names-icon" class="btn-icon">👁️</span>
+          <span id="pill-names-text" class="btn-label">Texto</span>
+        </button>
+      </div>
+
+      <!-- BOTONES CONTEXTUALES RÁPIDOS (SOLO VISIBLES CUANDO SE REQUIEREN) -->
+      <div class="context-bar-row">
+        <button id="pill-deselect-entity" class="context-pill-btn deselect" style="display: none;" title="Quitar selección actual">
+          🧹 Quitar Selección
+        </button>
+        <button id="pill-delete-isolated" class="context-pill-btn delete" style="display: none;" title="Eliminar capa recortada y volver al mapa normal">
           🗑️ Eliminar Capa
         </button>
-        <button id="pill-deselect-entity" class="pill-btn" style="display: none; border-color: #f59e0b; color: #fbbf24;" title="Quitar selección actual">
-          🧹 Deseleccionar
-        </button>
-        <button id="pill-open-qgis-layers" class="pill-btn" title="Panel de Capas estilo QGIS">
-          📑 Capas QGIS
-        </button>
-        <button id="pill-toggle-names" class="pill-btn" title="Mostrar u Ocultar Nombres">
-          <span id="pill-names-icon">👁️</span> <span id="pill-names-text">Nombres: No</span>
-        </button>
-        <button id="pill-provincias" class="pill-btn active">
-          🏛️ Provincias
-        </button>
-        <button id="pill-cantones" class="pill-btn">
-          🏘️ Cantones
-        </button>
-        <button id="pill-parroquias" class="pill-btn">
-          🏡 Parroquias
+        <button id="pill-restore-all" class="context-pill-btn restore" style="display: none;" title="Restaurar todas las capas base">
+          👁️ Restaurar
         </button>
       </div>
     </div>
@@ -2289,7 +2372,7 @@
       if (pillToggleNames) {
         pillToggleNames.classList.toggle('active', showNames);
         if (pillNamesIcon) pillNamesIcon.innerText = showNames ? '👁️' : '🙈';
-        if (pillNamesText) pillNamesText.innerText = showNames ? 'Nombres: Sí' : 'Nombres: No';
+        if (pillNamesText) pillNamesText.innerText = showNames ? 'Nombres' : 'Oculto';
       }
 
       // Actualizar tarjeta en caja de herramientas
