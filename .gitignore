@@ -1,0 +1,10 @@
+# Node / Scripts temporales
+update_geoportal.js
+node_modules/
+*.log
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
