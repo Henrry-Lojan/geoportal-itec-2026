@@ -1025,7 +1025,7 @@
       zoomDelta: 0.5,
       zoomControl: false,
       attributionControl: false,
-      tap: true
+      tap: false
     });
 
     // Panes
@@ -1509,6 +1509,12 @@
           document.getElementById('pill-cantones').classList.add('active');
           document.getElementById('qgis-chk-cantones').checked = true;
           targetGroup = baseLayers.cantones;
+        } else if (layerKey === 'parroquias') {
+          const data = await loadDataFile('PARROQUIAS_DATA', 'data_js/parroquias.js', 'geojson_web_ligero/parroquias_web.geojson');
+          baseLayers.parroquias = createInteractiveLayer(data, 'parroquias').addTo(map);
+          document.getElementById('pill-parroquias').classList.add('active');
+          document.getElementById('qgis-chk-parroquias').checked = true;
+          targetGroup = baseLayers.parroquias;
         }
       }
 
