@@ -624,6 +624,239 @@
       .floating-tools { right: 8px; }
       .fab-btn { width: 44px; height: 44px; font-size: 1.15rem; }
     }
+  
+    /* ROSA DE LOS VIENTOS (NORTE CARTOGRÁFICO) */
+    .carto-north-arrow {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 950;
+      pointer-events: none;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+      transition: all 0.3s;
+    }
+
+    /* MINI LEYENDA CARTOGRÁFICA */
+    .carto-legend {
+      position: absolute;
+      bottom: 24px;
+      right: 12px;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1.5px solid #38bdf8;
+      border-radius: 10px;
+      padding: 8px 12px;
+      color: #f8fafc;
+      z-index: 950;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+      font-size: 0.72rem;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .legend-title {
+      font-weight: 800;
+      color: #38bdf8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.68rem;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 2px;
+      margin-bottom: 2px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+    .legend-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      display: inline-block;
+      border: 1.5px solid #ffffff;
+    }
+    .swatch-study { background: #059669; }
+    .swatch-boundary { background: transparent; border-color: #38bdf8; }
+    .legend-datum {
+      font-size: 0.62rem;
+      color: #94a3b8;
+      margin-top: 2px;
+      border-top: 1px dashed #334155;
+      padding-top: 2px;
+    }
+
+    /* BARRA DE ESCALA LEAFLET PERSONALIZADA */
+    .leaflet-control-scale-line {
+      background: rgba(15, 23, 42, 0.88) !important;
+      backdrop-filter: blur(6px);
+      border: 2px solid #38bdf8 !important;
+      border-top: none !important;
+      color: #f8fafc !important;
+      font-weight: 800 !important;
+      font-size: 0.72rem !important;
+      padding: 2px 6px !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    /* HUD DE MEDICIÓN */
+    .measure-hud {
+      position: absolute;
+      top: 145px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(10px);
+      border: 2px solid #10b981;
+      border-radius: 12px;
+      padding: 10px 16px;
+      z-index: 1200;
+      color: #f8fafc;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.82rem;
+      max-width: 90vw;
+    }
+    .measure-hud.active { display: flex; }
+    .measure-val-box { display: flex; flex-direction: column; gap: 2px; }
+    .measure-dist { color: #34d399; font-weight: 800; font-size: 0.9rem; }
+    .measure-area { color: #38bdf8; font-weight: 700; font-size: 0.78rem; }
+    .measure-btn-group { display: flex; gap: 6px; }
+    .btn-measure-action {
+      background: #1e293b;
+      border: 1px solid #475569;
+      color: #f8fafc;
+      padding: 5px 9px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-measure-action.clear { border-color: #ef4444; color: #f87171; }
+    .btn-measure-action.done { background: #059669; border-color: #10b981; }
+
+    /* CONTROL DE OPACIDAD EN BOTTOM SHEET */
+    .sheet-opacity-box {
+      margin-top: 12px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 9px 12px;
+    }
+    .opacity-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
+    .opacity-label-row span:last-child {
+      color: #38bdf8;
+      font-size: 0.85rem;
+    }
+    .opacity-slider {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #334155;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    .opacity-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #10b981;
+      border: 2px solid #ffffff;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+
+    /* PULSO GPS EN TIEMPO REAL */
+    .gps-marker-pulse {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #0284c7;
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 0 14px #38bdf8;
+      position: relative;
+    }
+    .gps-marker-pulse::after {
+      content: '';
+      position: absolute;
+      top: -10px; left: -10px;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: rgba(56, 189, 248, 0.4);
+      animation: pulseGps 1.8s infinite ease-out;
+    }
+    @keyframes pulseGps {
+      0% { transform: scale(0.4); opacity: 1; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+
+    /* MODAL DE MAPA BASE */
+    .basemap-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(6px);
+      z-index: 2100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .basemap-modal.show { display: flex; }
+    .basemap-card {
+      background: #1e293b;
+      border: 2px solid #38bdf8;
+      border-radius: 16px;
+      padding: 18px;
+      width: 100%;
+      max-width: 360px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.7);
+    }
+    .basemap-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .btn-basemap-opt {
+      background: #0f172a;
+      border: 1.5px solid #334155;
+      color: #f8fafc;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-basemap-opt.active {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+    }
+
+    @media (max-width: 768px) {
+      .carto-north-arrow { top: 8px; right: 8px; transform: scale(0.85); transform-origin: top right; }
+      .carto-legend { bottom: 18px; right: 8px; padding: 6px 9px; font-size: 0.65rem; }
+      .measure-hud { top: 130px; font-size: 0.75rem; padding: 8px 12px; }
+    }
+
   </style>
 </head>
 <body>
@@ -650,11 +883,60 @@
         </div>
       </div>
 
+      
+      <!-- ROSA DE LOS VIENTOS (NORTE CARTOGRÁFICO OFICIAL) -->
+      <div id="carto-north-arrow" class="carto-north-arrow" title="Norte Cartográfico">
+        <svg viewBox="0 0 100 100" width="52" height="52">
+          <circle cx="50" cy="50" r="46" fill="rgba(15, 23, 42, 0.88)" stroke="#38bdf8" stroke-width="2.5"/>
+          <!-- Aguja Norte (Cyan / Blanco) -->
+          <polygon points="50,14 58,50 50,44" fill="#38bdf8"/>
+          <polygon points="50,14 42,50 50,44" fill="#ffffff"/>
+          <!-- Aguja Sur (Gris / Oscuro) -->
+          <polygon points="50,86 58,50 50,56" fill="#475569"/>
+          <polygon points="50,86 42,50 50,56" fill="#64748b"/>
+          <!-- Agujas Este / Oeste -->
+          <polygon points="86,50 50,58 56,50" fill="#475569"/>
+          <polygon points="86,50 50,42 56,50" fill="#64748b"/>
+          <polygon points="14,50 50,58 44,50" fill="#475569"/>
+          <polygon points="14,50 50,42 44,50" fill="#64748b"/>
+          <circle cx="50" cy="50" r="4.5" fill="#38bdf8"/>
+          <text x="50" y="27" text-anchor="middle" fill="#38bdf8" font-size="13" font-weight="900" font-family="-apple-system, BlinkMacSystemFont, sans-serif">N</text>
+        </svg>
+      </div>
+
+      <!-- LEYENDA CARTOGRÁFICA OFICIAL -->
+      <div id="carto-legend" class="carto-legend">
+        <div class="legend-title">Simbología</div>
+        <div class="legend-item">
+          <span class="legend-swatch swatch-study"></span>
+          <span id="legend-study-label">Zona de Estudio</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-swatch swatch-boundary"></span>
+          <span>Límites Políticos</span>
+        </div>
+        <div class="legend-datum">Datum: WGS 84 • ITEC 2026</div>
+      </div>
+
       <!-- MAPA LEAFLET -->
       <div id="map"></div>
     </div>
 
     <!-- MENSAJE TOAST -->
+    
+    <!-- HUD FLOTANTE DE MEDICIÓN (DISTANCIA Y ÁREA) -->
+    <div id="measure-hud" class="measure-hud">
+      <span>📏</span>
+      <div class="measure-val-box">
+        <div id="measure-dist-val" class="measure-dist">Toca el mapa para medir</div>
+        <div id="measure-area-val" class="measure-area">Área: 3+ puntos necesarios</div>
+      </div>
+      <div class="measure-btn-group">
+        <button id="btn-measure-clear" class="btn-measure-action clear" title="Borrar puntos">Limpiar</button>
+        <button id="btn-measure-done" class="btn-measure-action done" title="Terminar">Listo</button>
+      </div>
+    </div>
+
     <div id="toast-msg" class="toast-msg">
       <span>🎉</span> <span id="toast-text">¡Mensaje!</span>
     </div>
@@ -723,6 +1005,22 @@
       </button>
 
       <!-- 🎯 CENTRAR ECUADOR -->
+      
+      <!-- 📏 HERRAMIENTA DE MEDICIÓN -->
+      <button id="btn-toggle-measure" class="fab-btn" title="Medir Distancias y Áreas">
+        📏
+      </button>
+
+      <!-- 📍 GPS EN TIEMPO REAL -->
+      <button id="btn-gps-locate" class="fab-btn" title="Mi Ubicación GPS en vivo">
+        📍
+      </button>
+
+      <!-- ⛶ PANTALLA COMPLETA -->
+      <button id="btn-fullscreen-toggle" class="fab-btn" title="Pantalla Completa">
+        ⛶
+      </button>
+
       <button id="btn-center-ecuador" class="fab-btn" title="Centrar Ecuador">
         🎯
       </button>
@@ -746,6 +1044,16 @@
           ✂️ CORTAR Y AISLAR (APAGAR OTRAS CAPAS)
         </button>
         
+        
+        <!-- CONTROL DESLIZANTE DE TRANSPARENCIA -->
+        <div class="sheet-opacity-box">
+          <div class="opacity-label-row">
+            <span>🎚️ Transparencia de la Entidad:</span>
+            <span id="label-opacity-val">65%</span>
+          </div>
+          <input type="range" id="input-layer-opacity" min="15" max="100" value="65" class="opacity-slider" />
+        </div>
+
         <!-- BOTÓN SECUNDARIO: CORTAR DIVISIONES INTERNAS -->
         <button id="btn-cut-inner-divisions" class="btn-action-qgis btn-cut-internal">
           ✂️ VER DIVISIONES INTERNAS AISLADAS
@@ -810,6 +1118,40 @@
       </div>
     </div>
 
+    
+    <!-- MODAL SELECTOR DE MAPA BASE -->
+    <div id="basemap-modal" class="basemap-modal">
+      <div class="basemap-card">
+        <div class="search-header">
+          <h3>🗺️ Seleccionar Mapa Base</h3>
+          <button id="btn-close-basemap" class="btn-close-sheet">✕</button>
+        </div>
+        <div class="basemap-grid">
+          <button id="opt-base-osm" class="btn-basemap-opt active">
+            <span>🗺️</span>
+            <div>
+              <div>Callejero Político</div>
+              <small style="color: #94a3b8; font-weight: 400;">OpenStreetMap estándar</small>
+            </div>
+          </button>
+          <button id="opt-base-sat" class="btn-basemap-opt">
+            <span>🛰️</span>
+            <div>
+              <div>Foto Satelital Real</div>
+              <small style="color: #94a3b8; font-weight: 400;">Esri World Imagery HD</small>
+            </div>
+          </button>
+          <button id="opt-base-topo" class="btn-basemap-opt">
+            <span>⛰️</span>
+            <div>
+              <div>Relieve Topográfico</div>
+              <small style="color: #94a3b8; font-weight: 400;">OpenTopoMap con curvas y sombras</small>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- MODAL DE BÚSQUEDA Y SELECCIÓN DE ENTIDADES -->
     <div id="search-modal" class="search-modal">
       <div class="search-card">
@@ -852,6 +1194,11 @@
           <input type="text" id="input-student-name" class="export-input" placeholder="Tu Nombre y Apellido" />
         </div>
 
+        
+        <button id="btn-download-jpg" class="btn-export-opt" style="background: linear-gradient(135deg, #d97706, #f59e0b); color: #000; font-weight: 800;">
+          🖼️ Descargar como Imagen JPG (Alta Calidad)
+        </button>
+
         <button id="btn-download-image" class="btn-export-opt btn-export-png">
           📸 Descargar Imagen Centrada (PNG)
         </button>
@@ -891,9 +1238,14 @@
     map.createPane('isolatedPane').style.zIndex = 500;
 
     // Capas Base
+    // Capas Base Múltiples (Callejero, Satelital, Relieve Topográfico)
     const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, crossOrigin: true }).addTo(map);
     const satLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, crossOrigin: true });
-    let isSatellite = false;
+    const topoLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { maxZoom: 17, crossOrigin: true });
+    let currentBase = 'osm';
+
+    // Barra de Escala Gráfica Dinámica Oficial (en km/m)
+    L.control.scale({ imperial: false, metric: true, position: 'bottomleft' }).addTo(map);
 
     const baseLayers = { periferia: null, provincias: null, cantones: null, parroquias: null };
     const isolatedLayers = {};
