@@ -858,6 +858,9 @@
         <button id="pill-restore-all" class="pill-btn" style="display: none; border-color: #ef4444; color: #f87171;">
           👁️ Restaurar Capas
         </button>
+        <button id="pill-deselect-entity" class="pill-btn" style="display: none; border-color: #f59e0b; color: #fbbf24;" title="Quitar selección actual">
+          🧹 Deseleccionar
+        </button>
         <button id="pill-toggle-names" class="pill-btn" title="Mostrar u Ocultar Nombres">
           <span id="pill-names-icon">👁️</span> <span id="pill-names-text">Nombres: No</span>
         </button>
@@ -915,6 +918,10 @@
         
         <button id="btn-cut-inner-divisions" class="btn-action-qgis btn-cut-internal">
           🔍 VER DIVISIONES INTERNAS (AISLADAS)
+        </button>
+
+        <button id="btn-deselect-sheet" class="btn-action-qgis" style="background: rgba(30, 41, 59, 0.85); border: 1.5px solid #475569; color: #fbbf24;">
+          🧹 QUITAR SELECCIÓN
         </button>
 
         <!-- CONTROL DE TRANSPARENCIA -->
@@ -1202,7 +1209,7 @@
 
     // Funciones de Propiedades
     function getName(p) {
-      return p.DPA_DESPRO || p.DPA_DESCAN || p.DPA_DESPAR || p.nombre || 'Entidad';
+      return p.DPA_DESPAR || p.DPA_DESCAN || p.DPA_DESPRO || p.nombre || 'Entidad';
     }
     function getType(p) {
       if (p.DPA_DESPAR) return 'Parroquia';
@@ -1321,6 +1328,8 @@
       }
 
       openBottomSheet(name, type, props);
+      const pillDeselect = document.getElementById('pill-deselect-entity');
+      if (pillDeselect) pillDeselect.style.display = 'flex';
     }
 
     // Bottom Sheet
@@ -1353,15 +1362,33 @@
       bottomSheet.classList.add('show');
     }
 
-    function closeBottomSheet() {
-      bottomSheet.classList.remove('show');
-      if (!hasIsolatedLayer && selectedEntity && selectedEntity.layer && baseLayers[selectedEntity.layerKey]) {
+    function deselectCurrentEntity() {
+      if (selectedEntity && selectedEntity.layer && baseLayers[selectedEntity.layerKey]) {
         baseLayers[selectedEntity.layerKey].resetStyle(selectedEntity.layer);
       }
       selectedEntity = null;
+      bottomSheet.classList.remove('show');
+      const pillDeselect = document.getElementById('pill-deselect-entity');
+      if (pillDeselect) pillDeselect.style.display = 'none';
+
+      if (hasIsolatedLayer) {
+        const firstKey = Object.keys(isolatedLayers)[0];
+        displayMapFocus.innerText = `Zona Aislada: ${isolatedLayers[firstKey].name}`;
+      } else {
+        displayMapFocus.innerText = 'Zona: Todo el Ecuador (24 Provincias)';
+      }
+      showToast('🧹 Selección quitada');
+    }
+
+    function closeBottomSheet() {
+      deselectCurrentEntity();
     }
 
     document.getElementById('btn-close-sheet').addEventListener('click', closeBottomSheet);
+    const pillDeselectEl = document.getElementById('pill-deselect-entity');
+    if (pillDeselectEl) pillDeselectEl.addEventListener('click', deselectCurrentEntity);
+    const btnDeselectSheetEl = document.getElementById('btn-deselect-sheet');
+    if (btnDeselectSheetEl) btnDeselectSheetEl.addEventListener('click', deselectCurrentEntity);
     map.on('click', function(e) {
       if (isMeasuring) return;
       closeBottomSheet();
