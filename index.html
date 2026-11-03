@@ -1098,6 +1098,7 @@
       zoomDelta: 0.5,
       zoomControl: false,
       attributionControl: false,
+      preferCanvas: true,
       tap: false
     });
 
@@ -1188,23 +1189,63 @@
     }
 
     // =========================================================================
-    // FUNCIÓN DE ENCUADRE Y CENTRADO EXACTO DE ENTIDADES
+    // CÁLCULO DE LÍMITES GEOGRÁFICOS EXACTOS DE LA ENTIDAD AISLADA
     // =========================================================================
-    function focusAndCenterLayer(targetLayer) {
-      if (!targetLayer) return;
-      map.invalidateSize();
-      const bounds = targetLayer.getBounds ? targetLayer.getBounds() : targetLayer;
-      if (!bounds || !bounds.isValid()) return;
+    function getIsolatedBounds() {
+      let bounds = null;
+      const isoList = Object.values(isolatedLayers);
+      if (isoList.length > 0) {
+        isoList.forEach(item => {
+          if (item.layer && item.layer.getBounds) {
+            const b = item.layer.getBounds();
+            if (b && b.isValid()) {
+              if (!bounds) bounds = L.latLngBounds(b.getSouthWest(), b.getNorthEast());
+              else bounds.extend(b);
+            }
+          }
+        });
+      }
+      if (!bounds && selectedEntity && selectedEntity.layer && selectedEntity.layer.getBounds) {
+        const b = selectedEntity.layer.getBounds();
+        if (b && b.isValid()) bounds = b;
+      }
+      return bounds;
+    }
 
+    // =========================================================================
+    // CENTRADO OFICIAL: INTERACTIVO EN PANTALLA VS SIMÉTRICO PURO CARTOGRÁFICO
+    // =========================================================================
+    function centerOnIsolatedEntity(symmetric = false, animate = true) {
+      const bounds = getIsolatedBounds();
+      if (!bounds || !bounds.isValid()) {
+        map.setView([-1.45, -78.50], 7, { animate });
+        return;
+      }
+
+      map.invalidateSize();
       const isMobile = window.innerWidth <= 768;
 
-      // Centrado con márgenes que respetan la interfaz en pantalla
-      map.fitBounds(bounds, {
-        paddingTopLeft: [24, isMobile ? 120 : 135],
-        paddingBottomRight: [24, isMobile ? 35 : 45],
-        maxZoom: 13.5,
-        animate: true
-      });
+      if (symmetric) {
+        // MODO SIMÉTRICO CARTOGRÁFICO: Mismo margen exacto en los 4 costados (40px)
+        // La entidad queda matemáticamente en el centro geométrico puro de la hoja
+        map.fitBounds(bounds, {
+          padding: [45, 45],
+          maxZoom: 13.5,
+          animate: animate
+        });
+      } else {
+        // MODO PANTALLA CELULAR: Respeta el membrete superior y píldoras (~115px)
+        map.fitBounds(bounds, {
+          paddingTopLeft: [20, isMobile ? 115 : 125],
+          paddingBottomRight: [20, isMobile ? 35 : 45],
+          maxZoom: 13.5,
+          animate: animate
+        });
+      }
+    }
+
+    function focusAndCenterLayer(targetLayer) {
+      centerOnIsolatedEntity(false, true);
     }
 
     // ========================================================
@@ -1604,7 +1645,7 @@
     }
 
         // =========================================================================
-    // EXPORTACIÓN ESTABLE DUAL (VISTA ACTUAL VS CENTRADO PURO)
+    // EXPORTACIÓN ESTABLE DUAL (VISTA DE PANTALLA VS AUTO-CENTRADO CON ENTIDAD)
     // =========================================================================
     let exportCenteringMode = 'current'; // 'current' o 'symmetric'
 
@@ -1618,23 +1659,29 @@
         exportCenteringMode = 'current';
         optModeCurrent.classList.add('active');
         optModeSymmetric.classList.remove('active');
-        exportFocusText.innerText = '📱 La foto saldrá exactamente como la tienes encuadrada con tus dedos.';
+        exportFocusText.innerHTML = '📱 <b>Vista de Pantalla:</b> Cero movimiento. La foto saldrá exactamente como la tienes encuadrada con tus dedos.';
+        showToast('📱 Modo: Lo que ves en pantalla');
       });
+
       optModeSymmetric.addEventListener('click', () => {
         exportCenteringMode = 'symmetric';
         optModeSymmetric.classList.add('active');
         optModeCurrent.classList.remove('active');
-        exportFocusText.innerText = '🎯 La foto centrará la entidad recortada en el medio geométrico puro.';
+        exportFocusText.innerHTML = '🎯 <b>Auto-Centrado:</b> Centra la entidad recortada en el medio geométrico puro.';
+        // Inmediatamente centramos la entidad para que el estudiante la vea en vivo
+        centerOnIsolatedEntity(true, true);
+        showToast('🎯 Centrado en la entidad recortada');
       });
     }
 
     document.getElementById('btn-open-export').addEventListener('click', () => {
       inputStudentName.value = studentName;
+      const b = getIsolatedBounds();
       if (hasIsolatedLayer) {
         const firstKey = Object.keys(isolatedLayers)[0];
         exportFocusText.innerHTML = exportCenteringMode === 'current'
           ? `📱 Vista actual de: <b>${isolatedLayers[firstKey].name}</b>`
-          : `🎯 Auto-centrado puro de: <b>${isolatedLayers[firstKey].name}</b>`;
+          : `🎯 Auto-centrado en la entidad: <b>${isolatedLayers[firstKey].name}</b>`;
       } else if (selectedEntity) {
         exportFocusText.innerHTML = `Entidad: <b>${selectedEntity.type} ${selectedEntity.name}</b>`;
       } else {
@@ -1658,7 +1705,7 @@
     async function executeStableExport(format) {
       saveStudentName(inputStudentName.value);
       exportModal.classList.remove('show');
-      showToast(`📸 Procesando lámina ${format.toUpperCase()} (ITEC 2026)...`);
+      showToast(`📸 Generando lámina ${format.toUpperCase()} (ITEC 2026)...`);
 
       const topBar = document.querySelector('.top-bar');
       const floatingTools = document.querySelector('.floating-tools');
@@ -1672,7 +1719,7 @@
       if (measureHudEl) measureHudEl.style.display = 'none';
       if (toastMsg) toastMsg.style.display = 'none';
 
-      // Actualizar leyenda
+      // Actualizar leyenda institucional
       const legendStudyLabel = document.getElementById('legend-study-label');
       if (legendStudyLabel) {
         if (hasIsolatedLayer) {
@@ -1685,26 +1732,12 @@
         }
       }
 
-      const prevCenter = map.getCenter();
-      const prevZoom = map.getZoom();
-
+      // Si el usuario eligió Modo 2: Auto-centrar directamente con la entidad recortada
       if (exportCenteringMode === 'symmetric') {
-        let targetLayer = null;
-        if (hasIsolatedLayer) {
-          const firstKey = Object.keys(isolatedLayers)[0];
-          targetLayer = isolatedLayers[firstKey].layer;
-        } else if (selectedEntity && selectedEntity.layer) {
-          targetLayer = selectedEntity.layer;
-        }
-        if (targetLayer) {
-          const bounds = targetLayer.getBounds ? targetLayer.getBounds() : targetLayer;
-          if (bounds && bounds.isValid()) {
-            map.fitBounds(bounds, { padding: [40, 40], animate: false });
-            await new Promise(r => setTimeout(r, 260));
-          }
-        }
+        centerOnIsolatedEntity(true, false);
+        await new Promise(r => setTimeout(r, 320));
       } else {
-        // CERO MOVIMIENTO: Mantiene exactamente la pantalla que encuadró el estudiante
+        // Modo 1: CERO MOVIMIENTO (La vista de pantalla que el estudiante acomodó)
         await new Promise(r => setTimeout(r, 120));
       }
 
@@ -1731,7 +1764,7 @@
             }
             const blobUrl = URL.createObjectURL(blob);
 
-            // Descarga directa
+            // 1. Descarga automática instantánea
             const a = document.createElement('a');
             a.style.display = 'none';
             a.href = blobUrl;
@@ -1740,7 +1773,7 @@
             a.click();
             setTimeout(() => a.remove(), 1000);
 
-            // Modal de vista previa y respaldo de guardado en móviles
+            // 2. Modal de respaldo y vista previa táctil para teléfonos
             const previewContainer = document.getElementById('preview-img-container');
             const btnDirect = document.getElementById('btn-preview-direct-download');
             if (previewModal && previewContainer && btnDirect) {
@@ -1757,7 +1790,7 @@
               btnDirect.download = filename;
               previewModal.classList.add('show');
             }
-            showToast(`✅ ¡Imagen ${ext.toUpperCase()} lista para guardar!`);
+            showToast(`✅ ¡Imagen ${ext.toUpperCase()} generada con éxito!`);
           }, mime, 0.95);
 
         } else if (format === 'pdf') {
@@ -1798,9 +1831,6 @@
         console.error(err);
         alert('Error al exportar: ' + err.message);
       } finally {
-        if (exportCenteringMode === 'symmetric') {
-          map.setView(prevCenter, prevZoom, { animate: false });
-        }
         if (topBar) topBar.style.display = '';
         if (floatingTools) floatingTools.style.display = '';
         if (bottomSheet) bottomSheet.style.display = '';
